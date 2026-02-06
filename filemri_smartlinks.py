@@ -422,7 +422,7 @@ class AdSettingsDialog(QDialog):
         info_text = QLabel("""
 🎯 SmartLinks는 DeepFileX를 무료로 유지하기 위한 수익화 시스템입니다.
 💰 광고 클릭을 통해 개발비용을 충당하고 지속적인 업데이트를 제공합니다.
-🏥 의료 테마에 맞는 전문 도구들을 추천하여 사용자에게도 도움이 됩니다.
+🔷 프로페셔널 도구와 솔루션을 추천하여 사용자에게도 도움이 됩니다.
         """)
         info_text.setWordWrap(True)
         info_text.setStyleSheet("color: #2c3e50; padding: 10px;")
@@ -506,8 +506,8 @@ class PremiumUpgradeDialog(QDialog):
             "⚡ 더 빠른 스캔 속도",
             "🔍 고급 검색 필터",
             "💾 무제한 인덱스 저장",
-            "🏥 의료진 전용 기능",
-            "📊 상세 진단 리포트",
+            "🔷 전문가 전용 기능",
+            "📊 상세 분석 리포트",
             "🔒 프라이버시 강화",
             "🆘 우선 기술 지원"
         ]

@@ -122,18 +122,18 @@ class UpdateChecker(QThread):
 • 컨텍스트 기반 스마트 광고 타겟팅
 • 수익 통계 대시보드 추가
 
-🏥 의료 테마 강화:
-• 병원 차트 스타일 UI 완성도 향상
-• 진단 결과 리포트 기능 추가
-• 의료진을 위한 전문 기능 확장""",
+🔷 프로페셔널 기능 강화:
+• 모던 UI 디자인 완성도 향상
+• 상세 분석 리포트 기능 추가
+• 전문가를 위한 고급 기능 확장""",
             'assets': [
                 {
                     'name': 'DeepFileX_v1.4.0_Setup.exe',
-                    'browser_download_url': 'https://github.com/noblejim/filemri/releases/download/v1.4.0/DeepFileX_v1.4.0_Setup.exe'
+                    'browser_download_url': 'https://github.com/quantumlayer/deepfilex/releases/download/v1.4.0/DeepFileX_v1.4.0_Setup.exe'
                 }
             ],
             'published_at': '2025-08-29T10:00:00Z',
-            'html_url': 'https://github.com/noblejim/filemri/releases/tag/v1.4.0'
+            'html_url': 'https://github.com/quantumlayer/deepfilex/releases/tag/v1.4.0'
         }
     
     def is_newer_version(self, latest: str, current: str) -> bool:
@@ -186,7 +186,7 @@ class UpdateChecker(QThread):
 
 
 class UpdateDialog(QDialog):
-    """의료 테마 업데이트 알림 다이얼로그"""
+    """DeepFileX 업데이트 알림 다이얼로그"""
     
     def __init__(self, parent, update_info):
         super().__init__(parent)
@@ -208,11 +208,11 @@ class UpdateDialog(QDialog):
         self.countdown_timer.start(1000)  # 1초마다
     
     def init_ui(self):
-        """Medical Theme UI Initialization"""
-        self.setWindowTitle("🏥 DeepFileX Update Notification")
+        """DeepFileX UI Initialization"""
+        self.setWindowTitle("🔷 DeepFileX Update Notification")
         self.setFixedSize(550, 450)
-        
-        # 의료 테마 스타일 (DeepFileX 메인 앱과 동일한 스타일)
+
+        # DeepFileX 스타일 (메인 앱과 동일한 스타일)
         self.setStyleSheet("""
             QDialog {
                 background-color: #f8f9fa;
@@ -281,7 +281,7 @@ class UpdateDialog(QDialog):
         layout.setSpacing(15)
         layout.setContentsMargins(20, 20, 20, 20)
         
-        # 의료 테마 헤더
+        # DeepFileX 헤더
         header_group = QGroupBox("🔷 DeepFileX 업데이트")
         header_layout = QVBoxLayout(header_group)
 
@@ -299,8 +299,8 @@ class UpdateDialog(QDialog):
         header_layout.addWidget(version_info)
         layout.addWidget(header_group)
         
-        # Release Notes (Medical Chart Style)
-        changes_group = QGroupBox("📋 Diagnostic Improvements & New Features")
+        # Release Notes
+        changes_group = QGroupBox("📋 Analysis Improvements & New Features")
         changes_layout = QVBoxLayout(changes_group)
         
         changes_text = QTextEdit()
@@ -338,10 +338,10 @@ class UpdateDialog(QDialog):
         self.countdown_label.setStyleSheet("color: #7f8c8d; font-style: italic;")
         layout.addWidget(self.countdown_label)
         
-        # 의료 테마 버튼들
+        # 액션 버튼들
         button_layout = QHBoxLayout()
-        
-        # Update Now (Apply Treatment)
+
+        # Update Now
         update_text = UPDATE_MESSAGES.get('download_update', 'Update Now')
         if '(' in update_text:
             update_text = update_text.replace(' (', '\n(')

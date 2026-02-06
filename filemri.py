@@ -1278,7 +1278,7 @@ class DeepFileX(QMainWindow):
         self.setCentralWidget(central_widget)
         layout = QVBoxLayout(central_widget)
         
-        # Title with MRI indicator
+        # Title with DeepFileX branding
         title = QLabel("DEEPFILEX - ADVANCED FILE ANALYSIS")
         title.setFont(QFont("Arial", 18, QFont.Weight.Bold))
         title.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -1328,7 +1328,7 @@ class DeepFileX(QMainWindow):
     
     def create_turbo_controls(self):
         """Create enhanced control panel"""
-        group = QGroupBox("MRI Diagnostic Panel")
+        group = QGroupBox("DeepFileX Analysis Panel")
         layout = QVBoxLayout(group)
         
         # Folder controls
@@ -1339,7 +1339,7 @@ class DeepFileX(QMainWindow):
         
         self.folder_display = QLineEdit()
         self.folder_display.setReadOnly(True)
-        self.folder_display.setPlaceholderText("Add folders for medical records diagnosis...")
+        self.folder_display.setPlaceholderText("Add folders for deep file analysis...")
         folder_layout.addWidget(self.folder_display)
         
         add_folder_btn = QPushButton("Add Folder")
@@ -1498,7 +1498,7 @@ class DeepFileX(QMainWindow):
         layout = QVBoxLayout(widget)
         
         # Stats group
-        stats_group = QGroupBox("MRI Statistics")
+        stats_group = QGroupBox("Analysis Statistics")
         stats_layout = QVBoxLayout(stats_group)
         
         self.stats_label = QLabel("No scan data")
