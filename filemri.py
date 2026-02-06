@@ -1279,7 +1279,7 @@ class DeepFileX(QMainWindow):
         layout = QVBoxLayout(central_widget)
         
         # Title with MRI indicator
-        title = QLabel("FILE MRI - FILE SCAN TOOL")
+        title = QLabel("DEEPFILEX - ADVANCED FILE ANALYSIS")
         title.setFont(QFont("Arial", 18, QFont.Weight.Bold))
         title.setAlignment(Qt.AlignmentFlag.AlignCenter)
         title.setStyleSheet("""
@@ -1321,7 +1321,7 @@ class DeepFileX(QMainWindow):
         
         # Status bar
         self.status_bar = self.statusBar()
-        self.status_bar.showMessage("FileMRI ready - File Scan Tool")
+        self.status_bar.showMessage("DeepFileX ready - Advanced File Analysis System")
         
         # Apply turbo styling
         self.apply_turbo_styles()
@@ -1849,19 +1849,19 @@ class DeepFileX(QMainWindow):
             return
         
         # Create indexes folder in user's AppData folder
-        data_dir = Path.home() / 'AppData' / 'Roaming' / 'FileMRI'
+        data_dir = Path.home() / 'AppData' / 'Roaming' / 'DeepFileX'
         indexes_folder = data_dir / "indexes"
         os.makedirs(indexes_folder, exist_ok=True)
-        
+
         # Generate folder names for filename
         folder_names = self._generate_folder_names_for_filename()
-        
+
         # Default filename with folder names and timestamp
         timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
         if folder_names:
-            default_filename = f"filemri_index_{folder_names}_{timestamp}.pkl"
+            default_filename = f"deepfilex_index_{folder_names}_{timestamp}.pkl"
         else:
-            default_filename = f"filemri_index_{timestamp}.pkl"
+            default_filename = f"deepfilex_index_{timestamp}.pkl"
         
         default_path = os.path.join(indexes_folder, default_filename)
         
@@ -1952,7 +1952,7 @@ class DeepFileX(QMainWindow):
             try:
                 # Primary: User AppData folder
                 user_home = os.path.expanduser('~')
-                data_dir = os.path.join(user_home, 'AppData', 'Roaming', 'FileMRI')
+                data_dir = os.path.join(user_home, 'AppData', 'Roaming', 'DeepFileX')
                 indexes_folder = os.path.join(data_dir, 'indexes')
                 
                 # Create folder if it doesn't exist
@@ -1989,9 +1989,9 @@ class DeepFileX(QMainWindow):
                 
                 file_path, file_filter = QFileDialog.getOpenFileName(
                     self,
-                    "Load FileMRI Index File",
+                    "Load DeepFileX Index File",
                     indexes_folder,
-                    "FileMRI Index Files (*.pkl);;All Files (*.*)",
+                    "DeepFileX Index Files (*.pkl);;All Files (*.*)",
                     options=dialog_options
                 )
                 
@@ -2011,9 +2011,9 @@ class DeepFileX(QMainWindow):
                     
                     file_path, file_filter = QFileDialog.getOpenFileName(
                         self,
-                        "Load FileMRI Index File",
+                        "Load DeepFileX Index File",
                         indexes_folder,
-                        "FileMRI Index Files (*.pkl);;All Files (*.*)"
+                        "DeepFileX Index Files (*.pkl);;All Files (*.*)"
                     )
                     
                     if file_path:
@@ -2035,7 +2035,7 @@ class DeepFileX(QMainWindow):
                             self, 
                             'Load Index File', 
                             f'Please enter the full path to your index file:\n(Default folder: {indexes_folder})',
-                            text=os.path.join(indexes_folder, 'filemri_index_*.pkl')
+                            text=os.path.join(indexes_folder, 'deepfilex_index_*.pkl')
                         )
                         
                         if ok and file_path.strip():
@@ -3064,7 +3064,7 @@ Search Paths: {len(self.search_paths)}
             # 광고 위젯 생성 (하단 배너)
             self.smartlinks_widget = SmartLinksAdWidget(
                 parent=self, 
-                location="filemri_bottom_banner"
+                location="deepfilex_bottom_banner"
             )
             
             # 시그널 연결
@@ -3094,7 +3094,7 @@ Search Paths: {len(self.search_paths)}
             
             # 사용자에게 감사 메시지
             if hasattr(self, 'status_label'):
-                self.status_label.setText("💝 FileMRI 지원 감사합니다! 광고 수익으로 무료 서비스를 유지합니다.")
+                self.status_label.setText("💝 DeepFileX 지원 감사합니다! 광고 수익으로 무료 서비스를 유지합니다.")
             
         except Exception as e:
             logger.error(f"SmartLink 클릭 처리 오류: {e}")
@@ -3140,7 +3140,7 @@ Search Paths: {len(self.search_paths)}
                 f"광고 클릭: {stats['clicks']}회\n"
                 f"클릭율: {self.smartlinks_manager.get_click_rate():.1f}%\n"
                 f"예상 수익: ${revenue:.3f}\n\n"
-                f"💝 FileMRI를 지원해 주셔서 감사합니다!")
+                f"💝 DeepFileX를 지원해 주셔서 감사합니다!")
 
     # 🆕 자동 업데이트 시스템 메서드들
     def init_update_system(self):
@@ -3168,7 +3168,7 @@ Search Paths: {len(self.search_paths)}
             logger.info("🔄 시작 시 업데이트 확인 중...")
             
             # 마지막 체크 시간 확인
-            settings = QSettings('FileMRI', 'Updates')
+            settings = QSettings('DeepFileX', 'Updates')
             last_check = settings.value('last_check_date')
             
             if last_check:
@@ -3287,8 +3287,8 @@ def main():
         return
     
     app = QApplication(sys.argv)
-    app.setApplicationName("File MRI")
-    app.setOrganizationName("FileMRI")
+    app.setApplicationName("DeepFileX")
+    app.setOrganizationName("QuantumLayer")
     
     # Set application icon (if available)
     try:

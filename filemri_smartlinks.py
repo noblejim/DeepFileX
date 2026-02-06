@@ -51,8 +51,8 @@ class DeepFileXSmartLinksManager:
     
     def setup_data_storage(self):
         """데이터 저장소 설정"""
-        # 경로: 기본 %APPDATA%\DeepFileX\ads\, 환경변수 FILEMRI_ADS_DIR로 덮어쓰기 가능
-        ads_override = os.environ.get('FILEMRI_ADS_DIR')
+        # 경로: 기본 %APPDATA%\DeepFileX\ads\, 환경변수 DEEPFILEX_ADS_DIR로 덮어쓰기 가능
+        ads_override = os.environ.get('DEEPFILEX_ADS_DIR')
         if ads_override:
             self.appdata_path = Path(ads_override)
         else:
@@ -107,12 +107,12 @@ class DeepFileXSmartLinksManager:
         
         return log_entry
     
-    def generate_smartlink_url(self, context="filemri", location="bottom_banner"):
+    def generate_smartlink_url(self, context="deepfilex", location="bottom_banner"):
         """SmartLink URL 생성"""
         # 기본 파라미터
         params = {
             'key': self.config['key'],
-            'source': 'filemri_app',
+            'source': 'deepfilex_app',
             'context': context,
             'location': location,
             'smartlink_id': self.config['smartlink_id'],
@@ -598,7 +598,7 @@ class PremiumUpgradeDialog(QDialog):
                                "결제 완료 후 자동으로 활성화됩니다.")
         
         # 결제 페이지 열기 (향후 구현)
-        webbrowser.open("https://filemri.com/premium")
+        webbrowser.open("https://deepfilex.com/premium")
         
         self.accept()
 

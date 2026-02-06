@@ -61,7 +61,7 @@ class UpdateChecker(QThread):
         super().__init__()
         self.current_version = CURRENT_VERSION
         self.check_url = UPDATE_CONFIG.get("check_url", "")
-        self.settings = QSettings('FileMRI', 'Updates')
+        self.settings = QSettings('DeepFileX', 'Updates')
     
     def run(self):
         """업데이트 체크 실행"""
@@ -109,7 +109,7 @@ class UpdateChecker(QThread):
         """개발/테스트용: 가짜 업데이트 데이터 생성"""
         return {
             'tag_name': 'v1.4.0',
-            'name': 'FileMRI v1.4.0 - 성능 향상 및 새 기능',
+            'name': 'DeepFileX v1.4.0 - 성능 향상 및 새 기능',
             'body': """🎉 주요 개선사항:
 • 🚀 파일 스캔 속도 50% 향상
 • 📁 새로운 파일 형식 지원 (ZIP, RAR, 7Z)
@@ -128,8 +128,8 @@ class UpdateChecker(QThread):
 • 의료진을 위한 전문 기능 확장""",
             'assets': [
                 {
-                    'name': 'FileMRI_v1.4.0_Setup.exe',
-                    'browser_download_url': 'https://github.com/noblejim/filemri/releases/download/v1.4.0/FileMRI_v1.4.0_Setup.exe'
+                    'name': 'DeepFileX_v1.4.0_Setup.exe',
+                    'browser_download_url': 'https://github.com/noblejim/filemri/releases/download/v1.4.0/DeepFileX_v1.4.0_Setup.exe'
                 }
             ],
             'published_at': '2025-08-29T10:00:00Z',
@@ -191,7 +191,7 @@ class UpdateDialog(QDialog):
     def __init__(self, parent, update_info):
         super().__init__(parent)
         self.update_info = update_info
-        self.settings = QSettings('FileMRI', 'Updates')
+        self.settings = QSettings('DeepFileX', 'Updates')
         self.init_ui()
         
         # 자동 닫기 타이머 설정
@@ -209,10 +209,10 @@ class UpdateDialog(QDialog):
     
     def init_ui(self):
         """Medical Theme UI Initialization"""
-        self.setWindowTitle("🏥 FileMRI Update Notification")
+        self.setWindowTitle("🏥 DeepFileX Update Notification")
         self.setFixedSize(550, 450)
         
-        # 의료 테마 스타일 (FileMRI 메인 앱과 동일한 스타일)
+        # 의료 테마 스타일 (DeepFileX 메인 앱과 동일한 스타일)
         self.setStyleSheet("""
             QDialog {
                 background-color: #f8f9fa;
@@ -428,10 +428,10 @@ class UpdateDialog(QDialog):
             # 다운로드 URL이 인스톨러인 경우
             if self.update_info['download_url'].endswith('.exe'):
                 QMessageBox.information(self, "🚀 Update Started", 
-                    f"Downloading FileMRI update...\n\n"
+                    f"Downloading DeepFileX update...\n\n"
                     f"New Version: {self.update_info['version']}\n"
                     f"Installer will run when download completes.\n\n"
-                    f"💡 Tip: Please close FileMRI during the update process.",
+                    f"💡 Tip: Please close DeepFileX during the update process.",
                     QMessageBox.StandardButton.Ok)
                 
                 # 실제 환경에서는 다운로드 구현
@@ -496,12 +496,12 @@ class UpdateDialog(QDialog):
 
 
 class UpdateManager:
-    """업데이트 관리자 (FileMRI 메인 앱에서 사용)"""
+    """업데이트 관리자 (DeepFileX 메인 앱에서 사용)"""
     
     def __init__(self, parent=None):
         self.parent = parent
         self.update_checker = None
-        self.settings = QSettings('FileMRI', 'Updates')
+        self.settings = QSettings('DeepFileX', 'Updates')
     
     def check_for_updates_async(self):
         """비동기 업데이트 체크"""
@@ -560,7 +560,7 @@ def test_update_system():
     
     # 테스트 윈도우
     window = QMainWindow()
-    window.setWindowTitle("FileMRI Update System Test")
+    window.setWindowTitle("DeepFileX Update System Test")
     window.setGeometry(100, 100, 400, 300)
     
     central_widget = QWidget()
@@ -585,7 +585,7 @@ def test_update_system():
     
     window.show()
     
-    print("FileMRI 업데이트 시스템 테스트 시작")
+    print("DeepFileX 업데이트 시스템 테스트 시작")
     print("- '업데이트 확인' 버튼: 정상적인 업데이트 체크")
     print("- '강제 업데이트 확인' 버튼: 체크 주기 무시하고 강제 체크")
     
