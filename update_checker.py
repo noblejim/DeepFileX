@@ -193,24 +193,11 @@ class UpdateDialog(QDialog):
         self.update_info = update_info
         self.settings = QSettings('DeepFileX', 'Updates')
         self.init_ui()
-        
-        # 자동 닫기 타이머 설정
-        auto_close_time = UPDATE_CONFIG.get('auto_close_seconds', 30)
-        self.auto_close_timer = QTimer()
-        self.auto_close_timer.timeout.connect(self.auto_close)
-        self.auto_close_timer.setSingleShot(True)
-        self.auto_close_timer.start(auto_close_time * 1000)
-        
-        # 카운트다운 타이머
-        self.countdown_timer = QTimer()
-        self.countdown_timer.timeout.connect(self.update_countdown)
-        self.countdown_seconds = auto_close_time
-        self.countdown_timer.start(1000)  # 1초마다
     
     def init_ui(self):
         """DeepFileX UI Initialization"""
         self.setWindowTitle("🔷 DeepFileX Update Notification")
-        self.setFixedSize(550, 450)
+        self.setFixedSize(550, 650)
 
         # DeepFileX 스타일 (메인 앱과 동일한 스타일)
         self.setStyleSheet("""
@@ -305,7 +292,7 @@ class UpdateDialog(QDialog):
         
         changes_text = QTextEdit()
         changes_text.setPlainText(self.update_info['body'])
-        changes_text.setMaximumHeight(180)
+        changes_text.setMinimumHeight(400)
         changes_text.setReadOnly(True)
         
         changes_layout.addWidget(changes_text)
@@ -330,14 +317,7 @@ class UpdateDialog(QDialog):
         options_layout.addWidget(self.auto_check_cb)
         options_layout.addWidget(self.notify_cb)
         layout.addWidget(options_group)
-        
-        # 자동 닫기 알림
-        auto_close_time = UPDATE_CONFIG.get('auto_close_seconds', 30)
-        self.countdown_label = QLabel(f"⏰ {auto_close_time}초 후 자동으로 나중에 알림으로 설정됩니다")
-        self.countdown_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.countdown_label.setStyleSheet("color: #7f8c8d; font-style: italic;")
-        layout.addWidget(self.countdown_label)
-        
+
         # 액션 버튼들
         button_layout = QHBoxLayout()
 
@@ -403,25 +383,8 @@ class UpdateDialog(QDialog):
         button_layout.addWidget(self.skip_btn)
         layout.addLayout(button_layout)
     
-    def update_countdown(self):
-        """카운트다운 업데이트"""
-        self.countdown_seconds -= 1
-        if self.countdown_seconds > 0:
-            self.countdown_label.setText(f"⏰ {self.countdown_seconds}초 후 자동으로 나중에 알림으로 설정됩니다")
-        else:
-            self.countdown_timer.stop()
-            self.countdown_label.setText("⏰ 자동으로 나중에 알림으로 설정됩니다...")
-    
-    def auto_close(self):
-        """자동 닫기 (나중에 알림으로 설정)"""
-        self.countdown_timer.stop()
-        self.remind_later()
-    
     def download_update(self):
         """업데이트 다운로드 및 설치"""
-        self.countdown_timer.stop()
-        self.auto_close_timer.stop()
-        
         self.save_settings()
         
         try:
@@ -451,9 +414,6 @@ class UpdateDialog(QDialog):
     
     def remind_later(self):
         """나중에 알림 (기본 동작)"""
-        self.countdown_timer.stop()
-        self.auto_close_timer.stop()
-        
         self.save_settings()
         
         # 다음 체크는 설정된 기간 후로 설정
@@ -465,9 +425,6 @@ class UpdateDialog(QDialog):
     
     def skip_version(self):
         """이 버전 건너뛰기"""
-        self.countdown_timer.stop()
-        self.auto_close_timer.stop()
-        
         self.save_settings()
         
         # 스킵한 버전 목록에 추가
