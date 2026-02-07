@@ -130,7 +130,7 @@ class WebView2AdBanner(QFrame):
 
         # 쿠팡 파트너스 정보 (정적 이미지 배너 900x100)
         self.partner_link = "https://link.coupang.com/a/dHXhN0"
-        self.banner_image_url = "https://ads-partners.coupang.com/banners/963651?subId=&traceId=V0-301-879dd1202e5c73b2-I963651&w=900&h=100"
+        self.banner_image_url = "https://ads-partners.coupang.com/banners/963644?subId=&traceId=V0-301-879dd1202e5c73b2-I963644&w=900&h=100"
 
         # 광고 비활성화 확인
         if not self.is_ads_enabled() or self.is_premium_user():
