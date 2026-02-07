@@ -124,21 +124,12 @@ class WebView2AdBanner(QFrame):
         self.settings = QSettings('DeepFileX', 'SmartLinks')
         self.ad_server = get_ad_server()
 
-        # 네트워크 매니저 (이미지 로드용)
-        self.network_manager = QNetworkAccessManager()
-        self.network_manager.finished.connect(self.on_image_loaded)
-
-        # 쿠팡 파트너스 정보 (이미지 배너)
-        self.partner_link = "https://link.coupang.com/a/dHXhN0"
-        self.banner_image_url = "https://ads-partners.coupang.com/banners/963644?subId=&traceId=V0-301-879dd1202e5c73b2-I963644&w=728&h=90"
-
         # 광고 비활성화 확인
         if not self.is_ads_enabled() or self.is_premium_user():
             self.hide()
             return
 
         self.init_ui()
-        self.load_banner_image()
         self.track_impression()
 
     def is_ads_enabled(self):
@@ -150,97 +141,60 @@ class WebView2AdBanner(QFrame):
         return self.settings.value('is_premium', False, type=bool)
 
     def init_ui(self):
-        """UI 초기화 - 쿠팡 이미지 배너 표시"""
-        self.setFixedHeight(110)
+        """UI 초기화 - 쿠팡 광고 보기 버튼"""
+        self.setFixedHeight(70)
         self.setStyleSheet("""
             WebView2AdBanner {
-                background-color: #f5f5f5;
-                border-radius: 8px;
-                border: 1px solid #e0e0e0;
+                background-color: transparent;
             }
         """)
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(5, 5, 5, 5)
 
-        # 배너 이미지 레이블
-        self.banner_label = QLabel("🛒 쿠팡 배너 로딩 중...")
-        self.banner_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.banner_label.setStyleSheet("""
-            QLabel {
-                background-color: white;
-                border-radius: 8px;
-                border: 1px solid #ddd;
-                color: #666;
+        # 광고 보기 버튼
+        ad_button = QPushButton("🛒 쿠팡 특가 광고 보기 (회전 배너)")
+        ad_button.setFixedHeight(55)
+        ad_button.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+        ad_button.setStyleSheet("""
+            QPushButton {
+                background: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 0,
+                    stop: 0 #667eea, stop: 1 #764ba2);
+                color: white;
+                border: none;
+                border-radius: 10px;
+                font-size: 16px;
+                font-weight: bold;
+                padding: 10px;
+            }
+            QPushButton:hover {
+                background: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 0,
+                    stop: 0 #5568d3, stop: 1 #6a3f8f);
+            }
+            QPushButton:pressed {
+                background: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 0,
+                    stop: 0 #4556c2, stop: 1 #5a357e);
             }
         """)
-        self.banner_label.setFixedHeight(95)
-        self.banner_label.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
 
-        # 클릭 이벤트
-        self.banner_label.mousePressEvent = lambda e: self.open_ad()
+        # 부제목
+        subtitle = QLabel("💝 광고 클릭으로 DeepFileX 무료 서비스를 지원해주세요!")
+        subtitle.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        subtitle.setStyleSheet("""
+            QLabel {
+                color: #666;
+                font-size: 11px;
+                background: transparent;
+                padding: 2px;
+            }
+        """)
 
-        layout.addWidget(self.banner_label)
+        ad_button.clicked.connect(self.open_ad_page)
 
-    def load_banner_image(self):
-        """쿠팡 배너 이미지 네트워크에서 로드"""
-        try:
-            request = QNetworkRequest(QUrl(self.banner_image_url))
-            self.network_manager.get(request)
-            logger.info(f"📥 배너 이미지 로딩 시작: {self.banner_image_url}")
-        except Exception as e:
-            logger.error(f"배너 이미지 로드 오류: {e}")
-            self.banner_label.setText("❌ 광고 로드 실패")
+        layout.addWidget(ad_button)
+        layout.addWidget(subtitle)
 
-    def on_image_loaded(self, reply: QNetworkReply):
-        """이미지 로드 완료 시 호출"""
-        try:
-            if reply.error() == QNetworkReply.NetworkError.NoError:
-                image_data = reply.readAll()
-                pixmap = QPixmap()
-                pixmap.loadFromData(image_data)
-
-                if not pixmap.isNull():
-                    # 배너 크기에 맞게 조정 (aspect ratio 유지)
-                    scaled_pixmap = pixmap.scaled(
-                        self.banner_label.width() - 10,
-                        self.banner_label.height() - 10,
-                        Qt.AspectRatioMode.KeepAspectRatio,
-                        Qt.TransformationMode.SmoothTransformation
-                    )
-                    self.banner_label.setPixmap(scaled_pixmap)
-                    self.banner_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-                    logger.info("✅ 쿠팡 배너 이미지 로드 완료")
-                else:
-                    logger.error("배너 이미지 변환 실패")
-                    self.banner_label.setText("❌ 광고 이미지 오류")
-            else:
-                logger.error(f"배너 이미지 다운로드 실패: {reply.errorString()}")
-                self.banner_label.setText("❌ 광고 로드 실패")
-
-        except Exception as e:
-            logger.error(f"이미지 로드 처리 오류: {e}")
-            self.banner_label.setText("❌ 광고 로드 실패")
-        finally:
-            reply.deleteLater()
-
-    def open_ad(self):
-        """광고 클릭 - 쿠팡 파트너스 링크로 이동"""
-        QTimer.singleShot(100, self._do_open_ad)
-
-    def _do_open_ad(self):
-        """실제 광고 열기 (지연 실행)"""
-        try:
-            success = QDesktopServices.openUrl(QUrl(self.partner_link))
-
-            if success:
-                self.track_click()
-                logger.info(f"💰 쿠팡 파트너스 클릭: {self.partner_link}")
-            else:
-                logger.warning(f"광고 URL 열기 실패: {self.partner_link}")
-
-        except Exception as e:
-            logger.error(f"광고 열기 오류: {e}")
+        logger.info("✅ 쿠팡 광고 버튼 표시 (iframe 배너)")
 
     def open_ad_page(self):
         """광고 페이지 열기 - 로컬 서버를 통해 JavaScript 배너 서빙"""
