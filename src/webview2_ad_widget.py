@@ -128,9 +128,9 @@ class WebView2AdBanner(QFrame):
         self.network_manager = QNetworkAccessManager()
         self.network_manager.finished.connect(self.on_image_loaded)
 
-        # 쿠팡 파트너스 정보 (정적 이미지 배너 728x90)
+        # 쿠팡 파트너스 정보 (정적 이미지 배너 900x100)
         self.partner_link = "https://link.coupang.com/a/dHXhN0"
-        self.banner_image_url = "https://ads-partners.coupang.com/banners/963644?subId=&traceId=V0-301-879dd1202e5c73b2-I963644&w=728&h=90"
+        self.banner_image_url = "https://ads-partners.coupang.com/banners/963651?subId=&traceId=V0-301-879dd1202e5c73b2-I963651&w=900&h=100"
 
         # 광고 비활성화 확인
         if not self.is_ads_enabled() or self.is_premium_user():
@@ -150,9 +150,9 @@ class WebView2AdBanner(QFrame):
         return self.settings.value('is_premium', False, type=bool)
 
     def init_ui(self):
-        """UI 초기화 - 쿠팡 배너 이미지 표시 (728x90)"""
-        # 배너 크기: 728x90 + 여백
-        self.setFixedHeight(100)
+        """UI 초기화 - 쿠팡 배너 이미지 표시 (900x100)"""
+        # 배너 크기: 900x100 + 여백
+        self.setFixedHeight(110)
         self.setStyleSheet("""
             WebView2AdBanner {
                 background-color: #f5f5f5;
@@ -164,7 +164,7 @@ class WebView2AdBanner(QFrame):
         layout.setContentsMargins(5, 5, 5, 5)
         layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-        # 배너 이미지 레이블 (728x90 크기에 맞춤)
+        # 배너 이미지 레이블 (900x100 크기에 맞춤)
         self.banner_label = QLabel("🛒 쿠팡 배너 로딩 중...")
         self.banner_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.banner_label.setStyleSheet("""
@@ -175,8 +175,8 @@ class WebView2AdBanner(QFrame):
                 color: #666;
             }
         """)
-        # 배너 크기 고정: 728x90
-        self.banner_label.setFixedSize(728, 90)
+        # 배너 크기 고정: 900x100
+        self.banner_label.setFixedSize(900, 100)
         self.banner_label.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
 
         # 클릭 이벤트
@@ -184,7 +184,7 @@ class WebView2AdBanner(QFrame):
 
         layout.addWidget(self.banner_label)
 
-        logger.info("✅ 쿠팡 배너 표시 (728x90 정적 이미지)")
+        logger.info("✅ 쿠팡 배너 표시 (900x100 정적 이미지)")
 
     def load_banner_image(self):
         """쿠팡 배너 이미지 네트워크에서 로드"""
@@ -205,15 +205,15 @@ class WebView2AdBanner(QFrame):
                 pixmap.loadFromData(image_data)
 
                 if not pixmap.isNull():
-                    # 728x90 크기에 맞게 스케일 (정확히 맞춤)
+                    # 900x100 크기에 맞게 스케일 (정확히 맞춤)
                     scaled_pixmap = pixmap.scaled(
-                        728, 90,
+                        900, 100,
                         Qt.AspectRatioMode.IgnoreAspectRatio,  # 정확한 크기 맞춤
                         Qt.TransformationMode.SmoothTransformation
                     )
                     self.banner_label.setPixmap(scaled_pixmap)
                     self.banner_label.setText("")  # 텍스트 제거
-                    logger.info("✅ 쿠팡 배너 이미지 로드 완료 (728x90)")
+                    logger.info("✅ 쿠팡 배너 이미지 로드 완료 (900x100)")
                 else:
                     logger.error("배너 이미지 변환 실패")
                     self.banner_label.setText("❌ 광고 이미지 오류")
