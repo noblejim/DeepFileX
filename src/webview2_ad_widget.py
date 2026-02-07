@@ -246,30 +246,23 @@ class WebView2AdBanner(QFrame):
             logger.info("✅ 쿠팡 광고 버튼 표시 (Fallback 모드)")
 
     def open_ad_page(self):
-        """광고 페이지 열기 - 브라우저에서 HTML 파일 표시"""
+        """광고 페이지 열기 - 쿠팡 위젯 URL 직접 열기"""
         try:
-            # HTML 파일 경로
-            project_root = Path(__file__).parent.parent
-            html_file = project_root / 'assets' / 'ads' / 'coupang_iframe.html'
+            # 쿠팡 파트너스 위젯 URL (직접 열기)
+            widget_url = "https://ads-partners.coupang.com/widgets.html?id=963651&template=carousel&trackingCode=AF1662515&subId=&width=900&height=100&tsource="
 
-            if html_file.exists():
-                # 파일 URL로 변환
-                file_url = QUrl.fromLocalFile(str(html_file.absolute()))
+            # 시스템 브라우저로 열기
+            success = QDesktopServices.openUrl(QUrl(widget_url))
 
-                # 시스템 브라우저로 열기
-                success = QDesktopServices.openUrl(file_url)
-
-                if success:
-                    # 클릭 추적
-                    self.track_click()
-                    logger.info(f"💰 쿠팡 광고 페이지 열기: {html_file}")
-                else:
-                    logger.warning(f"광고 페이지 열기 실패: {html_file}")
+            if success:
+                # 클릭 추적
+                self.track_click()
+                logger.info(f"💰 쿠팡 파트너스 위젯 열기: {widget_url}")
             else:
-                logger.error(f"광고 HTML 파일 없음: {html_file}")
+                logger.warning(f"광고 URL 열기 실패: {widget_url}")
 
         except Exception as e:
-            logger.error(f"광고 페이지 열기 오류: {e}")
+            logger.error(f"광고 열기 오류: {e}")
 
     def track_impression(self):
         """노출 추적"""
