@@ -18,8 +18,8 @@ if %errorlevel% neq 0 (
 )
 
 REM Change to app directory and run DeepFileX
-cd /d "%APP_DIR%"
-python filemri.py
+cd /d "%APP_DIR%.."
+python src\filemri.py
 
 REM If there's an error, show it and pause
 if %errorlevel% neq 0 (

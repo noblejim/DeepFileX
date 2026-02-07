@@ -21,7 +21,8 @@ if %errorlevel% neq 0 (
 )
 
 echo Starting DeepFileX - Advanced File Analysis System...
-python filemri.py
+cd /d "%~dp0.."
+python src\filemri.py
 
 echo.
 echo Application closed.
