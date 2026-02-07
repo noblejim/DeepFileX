@@ -51,13 +51,16 @@ class LocalAdServer:
         @self.app.route('/')
         @self.app.route('/ad')
         def serve_ad():
+            # 프로젝트 루트 디렉토리 찾기
+            project_root = Path(__file__).parent.parent
+
             # 쿠팡파트너스 배너 우선 사용
-            coupang_file = Path(__file__).parent / 'coupang_partners_banner.html'
+            coupang_file = project_root / 'assets' / 'ads' / 'coupang_partners_banner.html'
             if coupang_file.exists():
                 return static_file('coupang_partners_banner.html', root=coupang_file.parent)
 
             # 백업: Adsterra 배너
-            adsterra_file = Path(__file__).parent / 'adsterra_banner.html'
+            adsterra_file = project_root / 'assets' / 'ads' / 'adsterra_banner.html'
             if adsterra_file.exists():
                 return static_file('adsterra_banner.html', root=adsterra_file.parent)
 
