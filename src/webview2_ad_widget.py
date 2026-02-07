@@ -28,7 +28,7 @@ try:
     WEBENGINE_AVAILABLE = True
 except ImportError as e:
     WEBENGINE_AVAILABLE = False
-    print(f"⚠️ QWebEngineView 사용 불가: {e}")
+    # logger는 아직 정의 안 됨, 나중에 로그로 출력
 
 import logging
 
@@ -181,13 +181,11 @@ class WebView2AdBanner(QFrame):
         return self.settings.value('is_premium', False, type=bool)
 
     def init_ui(self):
-        """UI 초기화 - 쿠팡 iframe 배너 표시"""
-        self.setFixedHeight(115)
+        """UI 초기화 - 쿠팡 광고 보기 버튼"""
+        self.setFixedHeight(70)
         self.setStyleSheet("""
             WebView2AdBanner {
-                background-color: #f5f5f5;
-                border-radius: 8px;
-                border: 1px solid #e0e0e0;
+                background-color: transparent;
             }
         """)
 
@@ -199,37 +197,79 @@ class WebView2AdBanner(QFrame):
             self.web_view = QWebEngineView()
             self.web_view.setFixedHeight(105)
             self.web_view.setHtml(self.iframe_html)
-
-            # 배경 투명 설정
             self.web_view.setStyleSheet("background: transparent;")
-
             layout.addWidget(self.web_view)
-
             logger.info("✅ QWebEngineView로 쿠팡 iframe 배너 로드")
         else:
-            # Fallback: 텍스트 레이블
-            fallback_label = QLabel("⚠️ 광고 표시 불가\n(QWebEngineView 필요)")
-            fallback_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-            fallback_label.setStyleSheet("""
-                QLabel {
-                    background-color: #fff3cd;
-                    color: #856404;
-                    border: 1px solid #ffc107;
-                    border-radius: 8px;
-                    font-size: 12px;
+            # Fallback: 광고 보기 버튼
+            ad_button = QPushButton("🛒 쿠팡 특가 광고 보기")
+            ad_button.setFixedHeight(55)
+            ad_button.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+            ad_button.setStyleSheet("""
+                QPushButton {
+                    background: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 0,
+                        stop: 0 #667eea, stop: 1 #764ba2);
+                    color: white;
+                    border: none;
+                    border-radius: 10px;
+                    font-size: 16px;
+                    font-weight: bold;
                     padding: 10px;
                 }
+                QPushButton:hover {
+                    background: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 0,
+                        stop: 0 #5568d3, stop: 1 #6a3f8f);
+                }
+                QPushButton:pressed {
+                    background: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 0,
+                        stop: 0 #4556c2, stop: 1 #5a357e);
+                }
             """)
-            fallback_label.setFixedHeight(95)
-            layout.addWidget(fallback_label)
 
-            logger.warning("⚠️ QWebEngineView 사용 불가 - Fallback 표시")
+            # 부제목
+            subtitle = QLabel("💝 광고 클릭으로 DeepFileX 무료 서비스를 지원해주세요!")
+            subtitle.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            subtitle.setStyleSheet("""
+                QLabel {
+                    color: #666;
+                    font-size: 11px;
+                    background: transparent;
+                    padding: 2px;
+                }
+            """)
 
-    def open_ad(self):
-        """광고 열기 (iframe은 자동 처리되므로 사용 안 됨)"""
-        # iframe 내부에서 클릭이 자동으로 처리됨
-        # 이 함수는 fallback용으로만 유지
-        pass
+            ad_button.clicked.connect(self.open_ad_page)
+
+            layout.addWidget(ad_button)
+            layout.addWidget(subtitle)
+
+            logger.info("✅ 쿠팡 광고 버튼 표시 (Fallback 모드)")
+
+    def open_ad_page(self):
+        """광고 페이지 열기 - 브라우저에서 HTML 파일 표시"""
+        try:
+            # HTML 파일 경로
+            project_root = Path(__file__).parent.parent
+            html_file = project_root / 'assets' / 'ads' / 'coupang_iframe.html'
+
+            if html_file.exists():
+                # 파일 URL로 변환
+                file_url = QUrl.fromLocalFile(str(html_file.absolute()))
+
+                # 시스템 브라우저로 열기
+                success = QDesktopServices.openUrl(file_url)
+
+                if success:
+                    # 클릭 추적
+                    self.track_click()
+                    logger.info(f"💰 쿠팡 광고 페이지 열기: {html_file}")
+                else:
+                    logger.warning(f"광고 페이지 열기 실패: {html_file}")
+            else:
+                logger.error(f"광고 HTML 파일 없음: {html_file}")
+
+        except Exception as e:
+            logger.error(f"광고 페이지 열기 오류: {e}")
 
     def track_impression(self):
         """노출 추적"""
