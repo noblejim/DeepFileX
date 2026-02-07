@@ -1,0 +1,93 @@
+name: CI
+
+on:
+  push:
+    branches: [ master, develop ]
+  pull_request:
+    branches: [ master, develop ]
+
+jobs:
+  lint:
+    name: Code Quality Check
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install flake8 black isort
+
+    - name: Run Black (Code Formatter Check)
+      run: black --check src/
+      continue-on-error: true
+
+    - name: Run isort (Import Sort Check)
+      run: isort --check-only src/
+      continue-on-error: true
+
+    - name: Run Flake8 (Linter)
+      run: flake8 src/ --max-line-length=120 --extend-ignore=E203,W503
+      continue-on-error: true
+
+  test:
+    name: Test Application
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12']
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Test import
+      run: python -c "import sys; sys.path.insert(0, 'src'); import filemri; print('✅ Import successful')"
+
+    - name: Check version
+      run: python -c "import sys; sys.path.insert(0, 'src'); from version_config import VERSION; print(f'Version: {VERSION}')"
+
+  build:
+    name: Build Windows Executable
+    runs-on: windows-latest
+    needs: [lint, test]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pyinstaller
+
+    - name: Build with PyInstaller
+      run: pyinstaller build/FileMRI_Phase11_Fixed.spec
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: DeepFileX-Windows
+        path: releases/v*/DeepFileX*.exe
+        retention-days: 30
