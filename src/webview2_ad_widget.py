@@ -197,23 +197,23 @@ class WebView2AdBanner(QFrame):
         logger.info("✅ 쿠팡 광고 버튼 표시 (iframe 배너)")
 
     def open_ad_page(self):
-        """광고 페이지 열기 - 로컬 서버를 통해 JavaScript 배너 서빙"""
+        """광고 페이지 열기 - 쿠팡 위젯 URL 직접 열기"""
         try:
-            # 로컬 서버 URL (JavaScript 실행 가능)
-            ad_url = f"http://localhost:{self.ad_server.port}/ad"
+            # 쿠팡 위젯 URL 직접 열기
+            widget_url = "https://ads-partners.coupang.com/widgets.html?id=963651&template=carousel&trackingCode=AF1662515&subId=&width=900&height=100&tsource="
 
             # 시스템 브라우저로 열기
-            success = QDesktopServices.openUrl(QUrl(ad_url))
+            success = QDesktopServices.openUrl(QUrl(widget_url))
 
             if success:
                 # 클릭 추적
                 self.track_click()
-                logger.info(f"💰 쿠팡 파트너스 광고 페이지 열기 (localhost): {ad_url}")
+                logger.info(f"💰 쿠팡 위젯 직접 열기: {widget_url}")
             else:
-                logger.warning(f"광고 페이지 열기 실패: {ad_url}")
+                logger.warning(f"위젯 URL 열기 실패: {widget_url}")
 
         except Exception as e:
-            logger.error(f"광고 페이지 열기 오류: {e}")
+            logger.error(f"광고 열기 오류: {e}")
 
     def track_impression(self):
         """노출 추적"""
