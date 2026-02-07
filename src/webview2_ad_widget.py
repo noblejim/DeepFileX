@@ -14,6 +14,7 @@ import os
 import sys
 import threading
 import webbrowser
+import tempfile
 from pathlib import Path
 from bottle import Bottle, static_file, ServerAdapter
 from PyQt6.QtWidgets import (QFrame, QVBoxLayout, QLabel, QPushButton,
@@ -21,6 +22,7 @@ from PyQt6.QtWidgets import (QFrame, QVBoxLayout, QLabel, QPushButton,
 from PyQt6.QtCore import Qt, QSettings, pyqtSignal, QTimer, QUrl, QByteArray
 from PyQt6.QtGui import QFont, QCursor, QDesktopServices, QPixmap
 from PyQt6.QtNetwork import QNetworkAccessManager, QNetworkRequest, QNetworkReply
+from playwright.sync_api import sync_playwright
 
 # QWebEngineView import (iframe 표시용)
 try:
@@ -124,13 +126,10 @@ class WebView2AdBanner(QFrame):
         self.settings = QSettings('DeepFileX', 'SmartLinks')
         self.ad_server = get_ad_server()
 
-        # 네트워크 매니저 (이미지 로드용)
-        self.network_manager = QNetworkAccessManager()
-        self.network_manager.finished.connect(self.on_image_loaded)
-
-        # 쿠팡 파트너스 정보 (정적 이미지 배너 900x100)
+        # 쿠팡 파트너스 정보 (carousel 위젯 900x100)
         self.partner_link = "https://link.coupang.com/a/dHXhN0"
-        self.banner_image_url = "https://ads-partners.coupang.com/banners/963644?subId=&traceId=V0-301-879dd1202e5c73b2-I963644&w=900&h=100"
+        self.carousel_url = "https://ads-partners.coupang.com/widgets.html?id=963651&template=carousel&trackingCode=AF1662515&subId=&width=900&height=100&tsource="
+        self.screenshot_path = None
 
         # 광고 비활성화 확인
         if not self.is_ads_enabled() or self.is_premium_user():
@@ -138,7 +137,7 @@ class WebView2AdBanner(QFrame):
             return
 
         self.init_ui()
-        self.load_banner_image()
+        self.load_carousel_screenshot()
         self.track_impression()
 
     def is_ads_enabled(self):
@@ -184,48 +183,74 @@ class WebView2AdBanner(QFrame):
 
         layout.addWidget(self.banner_label)
 
-        logger.info("✅ 쿠팡 배너 표시 (900x100 정적 이미지)")
+        logger.info("✅ 쿠팡 carousel 상품이미지 표시 (900x100)")
 
-    def load_banner_image(self):
-        """쿠팡 배너 이미지 네트워크에서 로드"""
-        try:
-            request = QNetworkRequest(QUrl(self.banner_image_url))
-            self.network_manager.get(request)
-            logger.info(f"📥 배너 이미지 로딩: {self.banner_image_url}")
-        except Exception as e:
-            logger.error(f"배너 이미지 로드 오류: {e}")
-            self.banner_label.setText("❌ 광고 로드 실패")
+    def load_carousel_screenshot(self):
+        """Playwright로 carousel 스크린샷 캡처"""
+        def capture_in_thread():
+            try:
+                logger.info(f"📸 Carousel 스크린샷 캡처 시작: {self.carousel_url}")
 
-    def on_image_loaded(self, reply: QNetworkReply):
-        """이미지 로드 완료 시 호출"""
+                with sync_playwright() as p:
+                    # Chromium 브라우저 시작 (headless)
+                    browser = p.chromium.launch(headless=True)
+                    page = browser.new_page(viewport={'width': 900, 'height': 100})
+
+                    # Carousel URL 로드
+                    page.goto(self.carousel_url, wait_until='networkidle', timeout=10000)
+
+                    # 광고가 로드될 시간 대기
+                    page.wait_for_timeout(2000)
+
+                    # 스크린샷 저장
+                    temp_dir = Path(tempfile.gettempdir()) / 'deepfilex_ads'
+                    temp_dir.mkdir(exist_ok=True)
+                    screenshot_file = temp_dir / 'coupang_carousel.png'
+
+                    page.screenshot(path=str(screenshot_file))
+                    browser.close()
+
+                    self.screenshot_path = str(screenshot_file)
+
+                    # UI 스레드에서 이미지 로드
+                    QTimer.singleShot(0, self.display_screenshot)
+
+                    logger.info(f"✅ Carousel 스크린샷 저장: {screenshot_file}")
+
+            except Exception as e:
+                logger.error(f"❌ Carousel 스크린샷 캡처 실패: {e}")
+                QTimer.singleShot(0, lambda: self.banner_label.setText("❌ 광고 로드 실패"))
+
+        # 백그라운드 스레드에서 스크린샷 캡처
+        thread = threading.Thread(target=capture_in_thread, daemon=True)
+        thread.start()
+
+    def display_screenshot(self):
+        """캡처한 스크린샷 표시"""
         try:
-            if reply.error() == QNetworkReply.NetworkError.NoError:
-                image_data = reply.readAll()
-                pixmap = QPixmap()
-                pixmap.loadFromData(image_data)
+            if self.screenshot_path and Path(self.screenshot_path).exists():
+                pixmap = QPixmap(self.screenshot_path)
 
                 if not pixmap.isNull():
-                    # 900x100 크기에 맞게 스케일 (정확히 맞춤)
+                    # 900x100 크기에 맞게 스케일
                     scaled_pixmap = pixmap.scaled(
                         900, 100,
-                        Qt.AspectRatioMode.IgnoreAspectRatio,  # 정확한 크기 맞춤
+                        Qt.AspectRatioMode.IgnoreAspectRatio,
                         Qt.TransformationMode.SmoothTransformation
                     )
                     self.banner_label.setPixmap(scaled_pixmap)
-                    self.banner_label.setText("")  # 텍스트 제거
-                    logger.info("✅ 쿠팡 배너 이미지 로드 완료 (900x100)")
+                    self.banner_label.setText("")
+                    logger.info("✅ Carousel 상품이미지 표시 완료 (900x100)")
                 else:
-                    logger.error("배너 이미지 변환 실패")
+                    logger.error("스크린샷 로드 실패")
                     self.banner_label.setText("❌ 광고 이미지 오류")
             else:
-                logger.error(f"배너 다운로드 실패: {reply.errorString()}")
-                self.banner_label.setText("❌ 광고 로드 실패")
+                logger.error(f"스크린샷 파일 없음: {self.screenshot_path}")
+                self.banner_label.setText("❌ 광고 파일 없음")
 
         except Exception as e:
-            logger.error(f"이미지 처리 오류: {e}")
+            logger.error(f"스크린샷 표시 오류: {e}")
             self.banner_label.setText("❌ 광고 오류")
-        finally:
-            reply.deleteLater()
 
     def open_ad(self):
         """배너 클릭 - 쿠팡 파트너스 링크로 이동"""
