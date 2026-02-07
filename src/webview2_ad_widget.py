@@ -209,20 +209,27 @@ class WebView2AdBanner(QFrame):
         ad_area.mousePressEvent = lambda e: self.open_ad()
 
     def open_ad(self):
-        """광고 열기 - 로컬 서버의 HTML 페이지"""
-        ad_url = self.ad_server.get_url()
+        """광고 열기 - 쿠팡 URL 직접 열기"""
+        # 쿠팡파트너스 링크 (실제 파트너스 링크로 교체 필요)
+        coupang_url = 'https://www.coupang.com/np/search?component=&q=IT+제품&channel=user'
+
+        # TODO: 실제 쿠팡파트너스 딥링크로 교체
+        # coupang_url = 'https://link.coupang.com/a/YOUR_AFFILIATE_LINK'
 
         try:
-            # 기본 브라우저로 열기
-            webbrowser.open(ad_url)
+            # QDesktopServices 사용 (더 안전함)
+            success = QDesktopServices.openUrl(QUrl(coupang_url))
 
-            # 클릭 추적
-            self.track_click()
+            if success:
+                # 클릭 추적
+                self.track_click()
 
-            # 시그널 발송
-            self.ad_clicked.emit(ad_url)
+                # 시그널 발송
+                self.ad_clicked.emit(coupang_url)
 
-            logger.info(f"💰 광고 클릭: {ad_url}")
+                logger.info(f"💰 광고 클릭: {coupang_url}")
+            else:
+                logger.warning(f"광고 URL 열기 실패: {coupang_url}")
 
         except Exception as e:
             logger.error(f"광고 열기 오류: {e}")
