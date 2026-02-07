@@ -210,6 +210,11 @@ class WebView2AdBanner(QFrame):
 
     def open_ad(self):
         """광고 열기 - 쿠팡 URL 직접 열기"""
+        # QTimer를 사용해서 브라우저 열기를 지연 실행 (이벤트 루프 충돌 방지)
+        QTimer.singleShot(100, self._do_open_ad)
+
+    def _do_open_ad(self):
+        """실제 광고 열기 로직 (지연 실행됨)"""
         # 쿠팡파트너스 링크 (실제 파트너스 링크로 교체 필요)
         coupang_url = 'https://www.coupang.com/np/search?component=&q=IT+제품&channel=user'
 

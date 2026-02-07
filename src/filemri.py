@@ -3069,7 +3069,10 @@ Search Paths: {len(self.search_paths)}
             )
             
             # 시그널 연결 (WebView2는 ad_clicked만 지원)
-            self.smartlinks_widget.ad_clicked.connect(self.on_smartlink_clicked)
+            # 람다로 감싸서 인자 개수 맞추기 (context 추가)
+            self.smartlinks_widget.ad_clicked.connect(
+                lambda url: self.on_smartlink_clicked("ad_banner", url)
+            )
             
             # 메인 레이아웃에 추가 (제일 하단)
             main_layout = self.centralWidget().layout()
