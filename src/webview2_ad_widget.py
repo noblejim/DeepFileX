@@ -64,15 +64,10 @@ class LocalAdServer:
             # 프로젝트 루트 디렉토리 찾기
             project_root = Path(__file__).parent.parent
 
-            # 쿠팡파트너스 배너 우선 사용
-            coupang_file = project_root / 'assets' / 'ads' / 'coupang_partners_banner.html'
+            # 쿠팡파트너스 JavaScript 배너 (우선)
+            coupang_file = project_root / 'assets' / 'ads' / 'coupang_iframe.html'
             if coupang_file.exists():
-                return static_file('coupang_partners_banner.html', root=coupang_file.parent)
-
-            # 백업: Adsterra 배너
-            adsterra_file = project_root / 'assets' / 'ads' / 'adsterra_banner.html'
-            if adsterra_file.exists():
-                return static_file('adsterra_banner.html', root=adsterra_file.parent)
+                return static_file('coupang_iframe.html', root=coupang_file.parent)
 
             return "<h1>Ad file not found</h1>"
 
@@ -246,27 +241,20 @@ class WebView2AdBanner(QFrame):
             logger.info("✅ 쿠팡 광고 버튼 표시 (Fallback 모드)")
 
     def open_ad_page(self):
-        """광고 페이지 열기 - JavaScript 배너가 포함된 HTML 파일"""
+        """광고 페이지 열기 - 로컬 서버를 통해 JavaScript 배너 서빙"""
         try:
-            # HTML 파일 경로
-            project_root = Path(__file__).parent.parent
-            html_file = project_root / 'assets' / 'ads' / 'coupang_iframe.html'
+            # 로컬 서버 URL (JavaScript 실행 가능)
+            ad_url = f"http://localhost:{self.ad_server.port}/ad"
 
-            if html_file.exists():
-                # 파일 URL로 변환
-                file_url = QUrl.fromLocalFile(str(html_file.absolute()))
+            # 시스템 브라우저로 열기
+            success = QDesktopServices.openUrl(QUrl(ad_url))
 
-                # 시스템 브라우저로 열기
-                success = QDesktopServices.openUrl(file_url)
-
-                if success:
-                    # 클릭 추적
-                    self.track_click()
-                    logger.info(f"💰 쿠팡 파트너스 광고 페이지 열기 (JavaScript): {html_file}")
-                else:
-                    logger.warning(f"광고 페이지 열기 실패: {html_file}")
+            if success:
+                # 클릭 추적
+                self.track_click()
+                logger.info(f"💰 쿠팡 파트너스 광고 페이지 열기 (localhost): {ad_url}")
             else:
-                logger.error(f"광고 HTML 파일 없음: {html_file}")
+                logger.warning(f"광고 페이지 열기 실패: {ad_url}")
 
         except Exception as e:
             logger.error(f"광고 페이지 열기 오류: {e}")
