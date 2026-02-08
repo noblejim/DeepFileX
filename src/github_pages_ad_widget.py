@@ -25,6 +25,10 @@ logger = logging.getLogger(__name__)
 class AdWebEnginePage(QWebEnginePage):
     """광고 클릭 시 외부 브라우저로 열기 위한 커스텀 페이지"""
 
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.ad_page_url = "https://noblejim.github.io/DeepFileX/ads/"
+
     def acceptNavigationRequest(self, url, nav_type, is_main_frame):
         """네비게이션 요청 처리 - 광고 클릭 시 외부 브라우저로 열기"""
         url_str = url.toString()
@@ -43,7 +47,12 @@ class AdWebEnginePage(QWebEnginePage):
         # 모든 외부 링크는 브라우저로 열기
         logger.info(f"[AD CLICK] Opening in browser: {url_str}")
         QDesktopServices.openUrl(url)
-        return False  # 내부 네비게이션 차단
+
+        # 원래 광고 페이지로 다시 로드 (배너가 사라지지 않도록)
+        from PyQt6.QtCore import QTimer
+        QTimer.singleShot(100, lambda: self.setUrl(QUrl(self.ad_page_url)))
+
+        return False  # 외부 네비게이션 차단
 
     def createWindow(self, window_type):
         """새 창 열기 요청 처리 (JavaScript window.open 등)"""
