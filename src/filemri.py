@@ -71,15 +71,27 @@ try:
 except ImportError:
     PYQT_AVAILABLE = False
 
-# 🆕 SmartLinks 수익화 시스템 통합 (WebView2 기반)
+# 🆕 SmartLinks 수익화 시스템 통합
 try:
-    from webview2_ad_widget import WebView2AdBanner
+    # SimpleAdBanner 방식 (가장 안정적)
+    try:
+        from simple_ad_widget import SimpleAdBanner as AdBanner
+        logger.info("SmartLinks Simple Ad Banner loaded (browser-based)")
+    except ImportError:
+        # Fallback 1: PyWebView 방식
+        try:
+            from pywebview_ad_widget import PyWebViewAdBanner as AdBanner
+            logger.info("SmartLinks PyWebView system loaded")
+        except ImportError:
+            # Fallback 2: WebView2 방식
+            from webview2_ad_widget import WebView2AdBanner as AdBanner
+            logger.info("SmartLinks WebView2 system loaded")
+
     from filemri_smartlinks import DeepFileXSmartLinksManager
     SMARTLINKS_AVAILABLE = True
-    logger.info("✅ SmartLinks WebView2 시스템 로드 성공")
 except ImportError as e:
     SMARTLINKS_AVAILABLE = False
-    logger.warning(f"⚠️ SmartLinks 모듈 없음: {e}")
+    logger.warning(f"SmartLinks module not available: {e}")
 
 # 🆕 자동 업데이트 시스템 통합
 try:
@@ -3062,8 +3074,8 @@ Search Paths: {len(self.search_paths)}
             # SmartLinks 관리자 초기화
             self.smartlinks_manager = DeepFileXSmartLinksManager()
             
-            # 광고 위젯 생성 (하단 배너 - WebView2 기반)
-            self.smartlinks_widget = WebView2AdBanner(
+            # 광고 위젯 생성 (하단 배너)
+            self.smartlinks_widget = AdBanner(
                 parent=self,
                 location="deepfilex_bottom_banner"
             )
