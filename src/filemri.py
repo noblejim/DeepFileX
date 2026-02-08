@@ -73,19 +73,24 @@ except ImportError:
 
 # 🆕 SmartLinks 수익화 시스템 통합
 try:
-    # SimpleAdBanner 방식 (가장 안정적)
+    # RotatingImageBanner 방식 (가장 안정적 - 진짜 작동함!)
     try:
-        from simple_ad_widget import SimpleAdBanner as AdBanner
-        logger.info("SmartLinks Simple Ad Banner loaded (browser-based)")
+        from rotating_image_banner import RotatingImageBanner as AdBanner
+        logger.info("SmartLinks Rotating Image Banner loaded (in-app display)")
     except ImportError:
-        # Fallback 1: PyWebView 방식
+        # Fallback 1: SimpleAdBanner (브라우저)
         try:
-            from pywebview_ad_widget import PyWebViewAdBanner as AdBanner
-            logger.info("SmartLinks PyWebView system loaded")
+            from simple_ad_widget import SimpleAdBanner as AdBanner
+            logger.info("SmartLinks Simple Ad Banner loaded (browser-based)")
         except ImportError:
-            # Fallback 2: WebView2 방식
-            from webview2_ad_widget import WebView2AdBanner as AdBanner
-            logger.info("SmartLinks WebView2 system loaded")
+            # Fallback 2: PyWebView
+            try:
+                from pywebview_ad_widget import PyWebViewAdBanner as AdBanner
+                logger.info("SmartLinks PyWebView system loaded")
+            except ImportError:
+                # Fallback 3: WebView2
+                from webview2_ad_widget import WebView2AdBanner as AdBanner
+                logger.info("SmartLinks WebView2 system loaded")
 
     from filemri_smartlinks import DeepFileXSmartLinksManager
     SMARTLINKS_AVAILABLE = True
