@@ -12,14 +12,31 @@ License: MIT
 from datetime import datetime
 
 # 🎯 현재 버전 정보
-VERSION = "1.3.0"
-VERSION_CODE = 130  # 숫자 버전 (비교용)
-BUILD_DATE = "2025-08-28"
-BUILD_TIME = "17:30:00"
-BUILD_TIMESTAMP = datetime(2025, 8, 28, 17, 30, 0)
+VERSION = "1.4.0"
+VERSION_CODE = 140  # 숫자 버전 (비교용)
+BUILD_DATE = "2026-02-08"
+BUILD_TIME = "21:45:00"
+BUILD_TIMESTAMP = datetime(2026, 2, 8, 21, 45, 0)
 
 # 📋 버전 히스토리
 VERSION_HISTORY = {
+    "1.4.0": {
+        "date": "2026-02-08",
+        "features": [
+            "GitHub Pages 기반 Adsterra 배너 광고 시스템",
+            "실제 광고 이미지 표시 및 자동 회전",
+            "광고 클릭 시 외부 브라우저 자동 열기",
+            "광고 높이 최적화 (240px) - 완전한 이미지 표시",
+            "PyQt6 6.10.2 업그레이드로 안정성 향상",
+            "광고 클릭 후 배너 유지 기능"
+        ],
+        "fixes": [
+            "QWebEngineView DLL 로드 문제 해결",
+            "광고 배너 사라짐 문제 수정",
+            "외부 링크 네비게이션 처리 개선",
+            "광고 이미지 잘림 문제 해결"
+        ]
+    },
     "1.3.0": {
         "date": "2025-08-28",
         "features": [
@@ -55,23 +72,23 @@ VERSION_HISTORY = {
 # 🔄 업데이트 시스템 설정
 UPDATE_CONFIG = {
     # GitHub 릴리즈 정보
-    "check_url": "https://api.github.com/repos/quantumlayer/deepfilex/releases/latest",
-    "download_base_url": "https://github.com/quantumlayer/deepfilex/releases/download/",
-    "releases_page_url": "https://github.com/quantumlayer/deepfilex/releases",
-    
+    "check_url": "https://api.github.com/repos/noblejim/DeepFileX/releases/latest",
+    "download_base_url": "https://github.com/noblejim/DeepFileX/releases/download/",
+    "releases_page_url": "https://github.com/noblejim/DeepFileX/releases",
+
     # 업데이트 확인 설정
     "auto_check_enabled": True,
     "check_interval_days": 7,  # 기본 7일마다 확인
     "background_check": True,
     "startup_delay_seconds": 5,  # 앱 시작 후 5초 뒤에 체크
-    
+
     # 알림 설정
     "auto_close_seconds": 30,  # 30초 후 자동으로 "나중에"로 설정
     "remind_later_days": 3,    # "나중에" 선택 시 3일 후 다시 알림
-    
+
     # 개발/테스트 모드
-    "test_mode": True,  # 개발용: 테스트 데이터 사용 (GitHub API 호출 방지)
-    "test_version": "1.4.0",
+    "test_mode": False,  # 실제 배포: GitHub API 사용
+    "test_version": "1.5.0",
     "force_update_check": False  # True면 체크 주기 무시
 }
 
@@ -139,7 +156,7 @@ DEVELOPER_INFO = {
     "team": "DeepFileX Team",
     "lead_developer": "QuantumLayer",
     "contact_email": "contact@quantumlayer.com",
-    "github_repo": "https://github.com/quantumlayer/deepfilex",
+    "github_repo": "https://github.com/noblejim/DeepFileX",
     "license": "MIT License",
     "copyright": f"© 2025-2026 QuantumLayer. All rights reserved."
 }
