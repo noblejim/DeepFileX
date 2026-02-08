@@ -55,7 +55,7 @@ class GitHubPagesAdWidget(QFrame):
 
     def init_ui(self):
         """UI 초기화 - QWebEngineView로 GitHub Pages 로드"""
-        self.setFixedHeight(160)
+        self.setFixedHeight(210)
         self.setStyleSheet("""
             GitHubPagesAdWidget {
                 background-color: #ffffff;
@@ -70,7 +70,7 @@ class GitHubPagesAdWidget(QFrame):
         try:
             # QWebEngineView 생성
             self.web_view = QWebEngineView()
-            self.web_view.setFixedSize(970, 140)
+            self.web_view.setFixedSize(970, 190)
 
             # 설정
             page = self.web_view.page()
