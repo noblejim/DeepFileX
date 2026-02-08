@@ -17,6 +17,65 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.4.0] - 2026-02-08
+
+### 🎉 Major Features
+
+#### GitHub Pages 기반 광고 시스템
+- **실제 광고 이미지 표시**: Adsterra 배너 광고가 프로그램 내부에서 직접 표시
+- **광고 자동 회전**: Adsterra가 제공하는 광고 자동 변경 시스템
+- **외부 브라우저 연동**: 광고 클릭 시 기본 브라우저에서 광고 페이지 자동 열림
+- **광고 배너 유지**: 클릭 후에도 프로그램 내 배너가 계속 표시되도록 자동 리로드
+- **최적화된 광고 높이**: 240px 높이로 광고 이미지 완전 표시
+
+### ⬆️ Upgraded
+- **PyQt6**: 6.9.1 → 6.10.2
+- **PyQt6-WebEngine**: 6.7.0 → 6.10.0
+- **PyQt6-Qt6**: 6.9.1 → 6.10.2
+- **PyQt6-WebEngine-Qt6**: 6.7.3 → 6.10.2
+
+### ✨ Added
+- `github_pages_ad_widget.py`: GitHub Pages 광고 위젯 (QWebEngineView 기반)
+- `AdWebEnginePage`: 커스텀 웹 엔진 페이지 클래스 (외부 링크 처리)
+- `acceptNavigationRequest()`: 네비게이션 요청 인터셉터
+- `createWindow()`: JavaScript 팝업 처리 핸들러
+- 광고 클릭 후 자동 리로드 기능 (QTimer 100ms)
+- 상세한 네비게이션 디버깅 로그
+
+### 🔧 Fixed
+- **QWebEngineView DLL 로드 실패**: PyQt6 버전 불일치 문제 해결
+- **광고 배너 사라짐**: 클릭 후 배너가 사라지던 버그 수정
+- **외부 링크 네비게이션**: JavaScript window.open 및 링크 클릭 처리 개선
+- **광고 이미지 잘림**: 컨테이너 높이를 90px → 140px → 190px → 240px로 단계적 증가
+
+### 🎨 Changed
+- 광고 시스템 우선순위:
+  1. GitHubPagesAdWidget (최우선)
+  2. RotatingImageBanner (Fallback 1)
+  3. SmartLinksAdWidget (Fallback 2)
+- `test_mode`: True → False (실제 GitHub API 사용)
+- GitHub 저장소 URL: `quantumlayer/deepfilex` → `noblejim/DeepFileX`
+- 광고 컨테이너 크기: 970×90 → 970×240
+
+### 🚀 Deployment
+- v1.4.0 빌드 스크립트 작성 (`build_v1.4.0.bat`)
+- PyInstaller 스펙 파일 생성 (`DeepFileX_v1.4.0.spec`)
+- 실행 파일 크기: ~222MB
+- GitHub Release 생성 및 게시
+
+### 📝 Documentation
+- `RELEASE_NOTES_v1.4.0.md`: 상세 릴리즈 노트
+- `docs/ads/README.md`: 광고 시스템 설정 가이드
+- `docs/ads/index.html`: GitHub Pages 광고 페이지 템플릿
+
+### 🧪 Testing
+- 광고 시스템 정상 작동 확인
+- 광고 클릭 → 브라우저 열림 확인
+- 광고 배너 유지 확인
+- 자동 업데이트 시스템 검증
+
+---
+
 ## [1.3.0] - 2026-02-07
 
 ### 🎨 Changed
