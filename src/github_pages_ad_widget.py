@@ -16,9 +16,29 @@ from PyQt6.QtWidgets import QFrame, QVBoxLayout
 from PyQt6.QtCore import Qt, QSettings, pyqtSignal, QUrl
 from PyQt6.QtWebEngineWidgets import QWebEngineView
 from PyQt6.QtWebEngineCore import QWebEnginePage, QWebEngineSettings
+from PyQt6.QtGui import QDesktopServices
 import logging
 
 logger = logging.getLogger(__name__)
+
+
+class AdWebEnginePage(QWebEnginePage):
+    """광고 클릭 시 외부 브라우저로 열기 위한 커스텀 페이지"""
+
+    def acceptNavigationRequest(self, url, nav_type, is_main_frame):
+        """네비게이션 요청 처리 - 광고 클릭 시 외부 브라우저로 열기"""
+        # 첫 페이지 로드는 허용
+        if url.toString() == "https://noblejim.github.io/DeepFileX/ads/":
+            return True
+
+        # 광고 클릭 등 다른 네비게이션은 외부 브라우저로
+        if nav_type == QWebEnginePage.NavigationType.NavigationTypeLinkClicked or \
+           (nav_type == QWebEnginePage.NavigationType.NavigationTypeOther and is_main_frame):
+            logger.info(f"Opening ad link in browser: {url.toString()}")
+            QDesktopServices.openUrl(url)
+            return False  # 내부 네비게이션 차단
+
+        return True
 
 
 class GitHubPagesAdWidget(QFrame):
@@ -72,9 +92,12 @@ class GitHubPagesAdWidget(QFrame):
             self.web_view = QWebEngineView()
             self.web_view.setFixedSize(970, 240)
 
+            # 커스텀 페이지 설정 (외부 링크를 브라우저로 열기 위함)
+            custom_page = AdWebEnginePage(self.web_view)
+            self.web_view.setPage(custom_page)
+
             # 설정
-            page = self.web_view.page()
-            settings = page.settings()
+            settings = custom_page.settings()
             settings.setAttribute(QWebEngineSettings.WebAttribute.JavascriptEnabled, True)
             settings.setAttribute(QWebEngineSettings.WebAttribute.LocalContentCanAccessRemoteUrls, True)
 
