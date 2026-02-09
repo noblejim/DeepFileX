@@ -18,6 +18,12 @@ from typing import List, Dict, Any, Optional
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import hashlib
 
+# v1.5.0 Indexing System Improvements
+from index_filename_generator import generate_index_filename_v15
+from index_updater import IndexUpdater
+from index_merger import IndexMerger
+from index_comparator import IndexComparator
+
 # Configure logging with proper path handling
 import tempfile
 import atexit
@@ -1471,7 +1477,29 @@ class DeepFileX(QMainWindow):
         clear_index_btn.setText("Clear Records")
         clear_index_btn.clicked.connect(self.clear_index)
         action_layout.addWidget(clear_index_btn)
-        
+
+        # v1.5.0 New Index Management Buttons
+        # Update index button
+        update_index_btn = QPushButton("Update Index")
+        update_index_btn.setText("Update Index")
+        update_index_btn.clicked.connect(self.update_index)
+        update_index_btn.setToolTip("Update existing index with current files")
+        action_layout.addWidget(update_index_btn)
+
+        # Merge indexes button
+        merge_indexes_btn = QPushButton("Merge Indexes")
+        merge_indexes_btn.setText("Merge Indexes")
+        merge_indexes_btn.clicked.connect(self.merge_indexes)
+        merge_indexes_btn.setToolTip("Combine multiple indexes into one")
+        action_layout.addWidget(merge_indexes_btn)
+
+        # Compare indexes button
+        compare_indexes_btn = QPushButton("Compare Indexes")
+        compare_indexes_btn.setText("Compare Indexes")
+        compare_indexes_btn.clicked.connect(self.compare_indexes)
+        compare_indexes_btn.setToolTip("Compare two indexes to see differences")
+        action_layout.addWidget(compare_indexes_btn)
+
         # Dark mode toggle
         self.dark_mode_btn = QPushButton("Dark Mode")
         self.dark_mode_btn.setText("Dark Mode")
@@ -1480,8 +1508,8 @@ class DeepFileX(QMainWindow):
         
         # 🆕 Update check button
         if UPDATE_SYSTEM_AVAILABLE:
-            self.update_btn = QPushButton("🔄 업데이트")
-            self.update_btn.setText("🔄 업데이트")
+            self.update_btn = QPushButton("UPDATE")
+            self.update_btn.setText("UPDATE")
             self.update_btn.clicked.connect(self.check_for_updates_manual)
             self.update_btn.setStyleSheet("""
                 QPushButton {
@@ -1876,15 +1904,8 @@ class DeepFileX(QMainWindow):
         indexes_folder = data_dir / "indexes"
         os.makedirs(indexes_folder, exist_ok=True)
 
-        # Generate folder names for filename
-        folder_names = self._generate_folder_names_for_filename()
-
-        # Default filename with folder names and timestamp
-        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-        if folder_names:
-            default_filename = f"deepfilex_index_{folder_names}_{timestamp}.pkl"
-        else:
-            default_filename = f"deepfilex_index_{timestamp}.pkl"
+        # Generate filename using v1.5.0 improved naming (YYMMDD_HHMM_폴더명.pkl)
+        default_filename = generate_index_filename_v15(self.search_paths)
         
         default_path = os.path.join(indexes_folder, default_filename)
         
@@ -2865,7 +2886,162 @@ Do you want to start turbo indexing now?
             self.preview_text.clear()
             self.preview_label.setText("No file selected")
             self.status_bar.showMessage("Records cleared")
-    
+
+    # v1.5.0 New Index Management Functions
+    def update_index(self):
+        """Update existing index with current files"""
+        if not self.search_paths:
+            QMessageBox.warning(self, "No Folders",
+                              "Please add folders to scan first.")
+            return
+
+        # Select index file to update
+        data_dir = Path.home() / 'AppData' / 'Roaming' / 'DeepFileX' / 'indexes'
+        file_path, _ = QFileDialog.getOpenFileName(
+            self, "Select Index to Update",
+            str(data_dir),
+            "Pickle files (*.pkl);;All files (*.*)"
+        )
+
+        if not file_path:
+            return
+
+        try:
+            from index_updater import update_index_file
+
+            self.status_bar.showMessage("Updating index...")
+            QApplication.processEvents()
+
+            # Perform update
+            success = update_index_file(file_path, self.search_paths)
+
+            if success:
+                QMessageBox.information(self, "Update Complete",
+                                      f"Index updated successfully:\n{file_path}")
+                self.status_bar.showMessage("Index updated")
+            else:
+                QMessageBox.critical(self, "Update Failed",
+                                   "Failed to update index.")
+                self.status_bar.showMessage("Update failed")
+
+        except Exception as e:
+            logger.error(f"Index update error: {e}", exc_info=True)
+            QMessageBox.critical(self, "Error",
+                               f"Update error:\n{str(e)}")
+            self.status_bar.showMessage("Update error")
+
+    def merge_indexes(self):
+        """Merge multiple indexes into one"""
+        data_dir = Path.home() / 'AppData' / 'Roaming' / 'DeepFileX' / 'indexes'
+
+        # Select multiple index files
+        file_paths, _ = QFileDialog.getOpenFileNames(
+            self, "Select Indexes to Merge (min 2)",
+            str(data_dir),
+            "Pickle files (*.pkl);;All files (*.*)"
+        )
+
+        if len(file_paths) < 2:
+            QMessageBox.warning(self, "Not Enough Files",
+                              "Please select at least 2 index files to merge.")
+            return
+
+        try:
+            from index_merger import merge_index_files
+
+            self.status_bar.showMessage(f"Merging {len(file_paths)} indexes...")
+            QApplication.processEvents()
+
+            # Perform merge
+            success = merge_index_files(file_paths)
+
+            if success:
+                QMessageBox.information(self, "Merge Complete",
+                                      f"Successfully merged {len(file_paths)} indexes!")
+                self.status_bar.showMessage("Indexes merged")
+            else:
+                QMessageBox.critical(self, "Merge Failed",
+                                   "Failed to merge indexes.")
+                self.status_bar.showMessage("Merge failed")
+
+        except Exception as e:
+            logger.error(f"Index merge error: {e}", exc_info=True)
+            QMessageBox.critical(self, "Error",
+                               f"Merge error:\n{str(e)}")
+            self.status_bar.showMessage("Merge error")
+
+    def compare_indexes(self):
+        """Compare two indexes to see differences"""
+        data_dir = Path.home() / 'AppData' / 'Roaming' / 'DeepFileX' / 'indexes'
+
+        # Select first index
+        index1, _ = QFileDialog.getOpenFileName(
+            self, "Select First Index (older)",
+            str(data_dir),
+            "Pickle files (*.pkl);;All files (*.*)"
+        )
+
+        if not index1:
+            return
+
+        # Select second index
+        index2, _ = QFileDialog.getOpenFileName(
+            self, "Select Second Index (newer)",
+            str(data_dir),
+            "Pickle files (*.pkl);;All files (*.*)"
+        )
+
+        if not index2:
+            return
+
+        # Ask if user wants to generate report
+        reply = QMessageBox.question(
+            self, "Generate Report",
+            "Do you want to save the comparison results to a file?",
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
+        )
+        generate_report = (reply == QMessageBox.StandardButton.Yes)
+
+        # Select save location if generating report
+        output_file = None
+        if generate_report:
+            from datetime import datetime
+            default_name = f"comparison_report_{datetime.now().strftime('%y%m%d_%H%M')}.txt"
+            output_file, _ = QFileDialog.getSaveFileName(
+                self, "Select Report Save Location",
+                str(Path.home() / 'Documents' / default_name),
+                "Text files (*.txt);;All files (*.*)"
+            )
+
+            if not output_file:
+                generate_report = False
+
+        try:
+            from index_comparator import compare_index_files
+
+            self.status_bar.showMessage("Comparing indexes...")
+            QApplication.processEvents()
+
+            # Perform comparison
+            success = compare_index_files(index1, index2, generate_report, output_file)
+
+            if success:
+                msg = "Comparison complete!"
+                if generate_report:
+                    msg += f"\nReport saved: {output_file}"
+                QMessageBox.information(self, "Comparison Complete", msg)
+                self.status_bar.showMessage("Comparison complete")
+            else:
+                QMessageBox.critical(self, "Comparison Failed",
+                                   "Failed to compare indexes.")
+                self.status_bar.showMessage("Comparison failed")
+
+        except Exception as e:
+            logger.error(f"Index comparison error: {e}", exc_info=True)
+            QMessageBox.critical(self, "Error",
+                               f"Comparison error:\n{str(e)}")
+            self.status_bar.showMessage("Comparison error")
+
     def on_search_changed(self):
         """Handle search input changes"""
         # Debounced search

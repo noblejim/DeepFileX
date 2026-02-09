@@ -10,10 +10,62 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### 🔄 Planned
-- Advanced search filters (regex, date range)
 - Dashboard charts (file distribution visualization)
 - Multi-language support (English, Japanese)
 - AI-based file classification and recommendations
+- OCR for image text extraction
+
+---
+
+## [1.5.0] - 2026-02-09
+
+### ✨ Added - Indexing System Improvements
+- **New filename format**: Simplified from `deepfilex_index_Documents_20260209_184249.pkl` to `260209_1842_Documents.pkl` (44.4% shorter)
+  - Format: `YYMMDD_HHMM_FolderName.pkl`
+  - Full Korean/Unicode support
+  - Automatic timestamp generation
+- **Index Update feature**: Update existing indexes incrementally
+  - Detect added, removed, and modified files
+  - Preserve unchanged data
+  - Update in-place (same filename)
+- **Index Merge feature**: Combine multiple indexes into one
+  - Automatic duplicate removal
+  - Smart conflict resolution (newest version wins)
+  - Combined statistics
+- **Index Compare feature**: Analyze differences between two indexes
+  - Show added, removed, and modified files
+  - Generate comparison reports
+  - Statistical analysis
+
+### 🎨 UI Enhancements
+- **3 new buttons** added to main interface:
+  - `Update Index` - Update existing index with current files
+  - `Merge Indexes` - Combine multiple indexes into one
+  - `Compare Indexes` - Compare two indexes and show differences
+- **Tooltips** added for better user guidance
+- **Status bar updates** for all new operations
+
+### 🔧 Technical Details
+- **New modules**:
+  - `src/index_filename_generator.py` - Improved filename generation
+  - `src/index_updater.py` - Index update functionality
+  - `src/index_merger.py` - Index merge functionality
+  - `src/index_comparator.py` - Index comparison functionality
+- **Modified files**:
+  - `src/deepfilex.py` - Integrated new modules and UI buttons
+- **Development**:
+  - `dev/v1.5.0/` - Development folder with implementation plan
+  - All features verified using Context7 MCP for Python best practices
+
+### 📊 Performance
+- **Filename length**: Reduced by 44.4% (45 chars → 25 chars)
+- **Update speed**: Incremental updates only scan changed files
+- **Merge efficiency**: Set-based operations for fast deduplication
+
+### 🐛 Bug Fixes
+- Fixed filename generation for paths with special characters
+- Improved error handling in index operations
+- Added comprehensive logging for debugging
 
 ---
 
