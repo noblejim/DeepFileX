@@ -1,2 +1,0 @@
-"zone name","placement name","placement id","code (smart link)"
-smart-link-2891475,Smartlink_1,27417447,https://www.effectivegatecpm.com/nndiuxsyi?key=7f25d09e5bc7b1e1c3cb37e467e6821d
