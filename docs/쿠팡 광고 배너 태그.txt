@@ -1,8 +1,0 @@
-자바스크립트 태그:
-<script src="https://ads-partners.coupang.com/g.js"></script>
-<script>
-	new PartnersCoupang.G({"id":963651,"template":"carousel","trackingCode":"AF1662515","width":"900","height":"100","tsource":""});
-</script>
-
-iframe 태그:
-<iframe src="https://ads-partners.coupang.com/widgets.html?id=963651&template=carousel&trackingCode=AF1662515&subId=&width=900&height=100&tsource=" width="900" height="100" frameborder="0" scrolling="no" referrerpolicy="unsafe-url" browsingtopics></iframe>

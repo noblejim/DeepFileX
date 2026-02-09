@@ -12,9 +12,6 @@ __pycache__/
 .Python
 *.egg
 *.egg-info/
-dist/
-build/
-*.spec
 
 # ===================================
 # Virtual Environment
@@ -52,16 +49,18 @@ desktop.ini
 # ===================================
 # Project Specific
 # ===================================
-# Temporary build outputs
+# Build artifacts (temporary files only)
+build/temp/
 installer_output/
+
+# Release executables (too large for GitHub)
+releases/**/*.exe
+releases/**/*.msi
+releases/**/*.zip
 
 # User data (keep structure, ignore content)
 indexes/*.pkl
 indexes/*.json
-
-# Test files
-test_*.py
-*_test.py
 
 # Backup files
 *.bak
