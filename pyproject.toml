@@ -1,6 +1,6 @@
 [project]
 name = "deepfilex"
-version = "1.3.0"
+version = "1.4.1"
 description = "DeepFileX - Advanced File Analysis System"
 authors = [
     {name = "QuantumLayer", email = "contact@quantumlayer.com"}
@@ -49,11 +49,11 @@ docs = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/quantumlayer/deepfilex"
-Documentation = "https://github.com/quantumlayer/deepfilex#readme"
-Repository = "https://github.com/quantumlayer/deepfilex"
-"Bug Tracker" = "https://github.com/quantumlayer/deepfilex/issues"
-Changelog = "https://github.com/quantumlayer/deepfilex/blob/master/CHANGELOG.md"
+Homepage = "https://github.com/noblejim/DeepFileX"
+Documentation = "https://github.com/noblejim/DeepFileX#readme"
+Repository = "https://github.com/noblejim/DeepFileX"
+"Bug Tracker" = "https://github.com/noblejim/DeepFileX/issues"
+Changelog = "https://github.com/noblejim/DeepFileX/blob/master/CHANGELOG.md"
 
 [build-system]
 requires = ["setuptools>=65.0", "wheel"]

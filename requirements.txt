@@ -1,4 +1,4 @@
-# DeepFileX Requirements v1.3.0
+# DeepFileX Requirements v1.4.1
 # Core dependencies (required)
 PyQt6>=6.4.0
 chardet>=5.0.0

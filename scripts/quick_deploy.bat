@@ -34,7 +34,7 @@ if not exist ".git" (
 
 :: 원격 저장소 설정
 git remote remove origin 2>nul
-git remote add origin https://github.com/quantumlayer/DeepFileX.git
+git remote add origin https://github.com/noblejim/DeepFileX.git
 git branch -M main
 echo [OK] GitHub 저장소 연결 완료
 
@@ -145,11 +145,11 @@ echo ^<div align="center"^>
 echo.
 echo **파일 시스템을 의료용 MRI처럼 정밀 스캔하는 혁신적인 도구**
 echo.
-echo [![Version](https://img.shields.io/badge/version-1.3.0-brightgreen.svg)](https://github.com/quantumlayer/DeepFileX/releases^)
+echo [![Version](https://img.shields.io/badge/version-1.3.0-brightgreen.svg)](https://github.com/noblejim/DeepFileX/releases^)
 echo [![Python](https://img.shields.io/badge/python-3.8%%2B-blue.svg)](https://www.python.org/^)
 echo [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE^)
 echo.
-echo [**📥 다운로드**](https://github.com/quantumlayer/DeepFileX/releases/latest^) • [**🐛 버그 신고**](https://github.com/quantumlayer/DeepFileX/issues^)
+echo [**📥 다운로드**](https://github.com/noblejim/DeepFileX/releases/latest^) • [**🐛 버그 신고**](https://github.com/noblejim/DeepFileX/issues^)
 echo.
 echo ^</div^>
 echo.
@@ -170,14 +170,14 @@ echo.
 echo ## 🚀 **빠른 시작**
 echo.
 echo ### **설치 프로그램 다운로드 ^(권장^)**
-echo 1. [**최신 릴리즈**](https://github.com/quantumlayer/DeepFileX/releases/latest^)에서 `DeepFileX_v1.3.0_Setup.exe` 다운로드
+echo 1. [**최신 릴리즈**](https://github.com/noblejim/DeepFileX/releases/latest^)에서 `DeepFileX_v1.3.0_Setup.exe` 다운로드
 echo 2. 설치 프로그램 실행 ^(관리자 권한 필요^)
 echo 3. 설치 완료 후 바탕화면 아이콘으로 실행
 echo.
 echo ### **소스코드에서 실행**
 echo ```bash
 echo # 저장소 복제
-echo git clone https://github.com/quantumlayer/DeepFileX.git
+echo git clone https://github.com/noblejim/DeepFileX.git
 echo cd DeepFileX
 echo.
 echo # 의존성 설치
@@ -210,7 +210,7 @@ echo 5. 🔀 풀 리퀘스트 생성
 echo.
 echo ## 📞 **지원 및 연락처**
 echo.
-echo - 🐛 **버그 신고**: [GitHub Issues](https://github.com/quantumlayer/DeepFileX/issues^)
+echo - 🐛 **버그 신고**: [GitHub Issues](https://github.com/noblejim/DeepFileX/issues^)
 echo - 📧 **이메일**: quantumlayer.js@gmail.com
 echo.
 echo ## 📜 **라이선스**
@@ -366,8 +366,8 @@ echo █████████████████████████
 echo           🎉 DeepFileX GitHub 배포 완료! 🎉
 echo ████████████████████████████████████████████████
 echo.
-echo 🔗 GitHub 저장소: https://github.com/quantumlayer/DeepFileX
-echo 📦 릴리즈 페이지: https://github.com/quantumlayer/DeepFileX/releases
+echo 🔗 GitHub 저장소: https://github.com/noblejim/DeepFileX
+echo 📦 릴리즈 페이지: https://github.com/noblejim/DeepFileX/releases
 echo.
 echo 📝 다음 단계:
 echo 1. GitHub에서 v1.3.0 릴리즈 확인

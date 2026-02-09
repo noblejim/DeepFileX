@@ -35,7 +35,7 @@ except ImportError:
     # Fallback: 하드코딩된 값들
     CURRENT_VERSION = "1.3.0"
     UPDATE_CONFIG = {
-        "check_url": "https://api.github.com/repos/quantumlayer/deepfilex/releases/latest",
+        "check_url": "https://api.github.com/repos/noblejim/DeepFileX/releases/latest",
         "test_mode": True,
         "test_version": "1.4.0",
         "auto_check_enabled": True,
@@ -73,17 +73,52 @@ class UpdateChecker(QThread):
             else:
                 # 실제 환경에서는 requests 사용
                 import requests
-                response = requests.get(self.check_url, timeout=10)
-                response.raise_for_status()
-                release_data = response.json()
-            
+                from requests.exceptions import (
+                    ConnectionError, Timeout, HTTPError,
+                    TooManyRedirects, JSONDecodeError, RequestException
+                )
+
+                try:
+                    response = requests.get(self.check_url, timeout=10)
+                    response.raise_for_status()
+                    release_data = response.json()
+
+                except ConnectionError:
+                    self.error_occurred.emit("❌ 서버 연결 실패: 네트워크 연결을 확인하세요")
+                    return
+                except Timeout:
+                    self.error_occurred.emit("⏱️ 요청 시간 초과: 네트워크가 느리거나 서버가 응답하지 않습니다")
+                    return
+                except HTTPError as e:
+                    if hasattr(e.response, 'status_code'):
+                        if e.response.status_code == 404:
+                            self.error_occurred.emit("❌ 업데이트 정보를 찾을 수 없습니다 (404)")
+                        elif e.response.status_code == 403:
+                            self.error_occurred.emit("🚫 API 접근 제한: 잠시 후 다시 시도하세요 (403)")
+                        elif e.response.status_code >= 500:
+                            self.error_occurred.emit(f"🔧 서버 오류: GitHub 서버에 문제가 있습니다 ({e.response.status_code})")
+                        else:
+                            self.error_occurred.emit(f"❌ HTTP 오류: {e}")
+                    else:
+                        self.error_occurred.emit(f"❌ HTTP 오류: {e}")
+                    return
+                except TooManyRedirects:
+                    self.error_occurred.emit("🔄 리다이렉트 오류: URL 설정을 확인하세요")
+                    return
+                except JSONDecodeError:
+                    self.error_occurred.emit("⚠️ 응답 파싱 실패: 서버 응답 형식이 잘못되었습니다")
+                    return
+                except RequestException as e:
+                    self.error_occurred.emit(f"🌐 네트워크 오류: {str(e)}")
+                    return
+
             latest_version = release_data['tag_name'].lstrip('v')
-            
+
             if CONFIG_AVAILABLE:
                 version_is_newer = is_newer_version(latest_version)
             else:
                 version_is_newer = self.is_newer_version(latest_version, self.current_version)
-            
+
             if version_is_newer:
                 # 사용자가 스킵한 버전인지 확인
                 skipped_versions = self.settings.value('skipped_versions', [])
@@ -101,9 +136,11 @@ class UpdateChecker(QThread):
                     self.no_update.emit()
             else:
                 self.no_update.emit()
-                
+
+        except KeyError as e:
+            self.error_occurred.emit(f"⚠️ 응답 데이터 오류: 필수 필드가 없습니다 ({e})")
         except Exception as e:
-            self.error_occurred.emit(f"업데이트 확인 실패: {str(e)}")
+            self.error_occurred.emit(f"❌ 예상치 못한 오류: {str(e)}")
     
     def create_fake_update_data(self):
         """개발/테스트용: 가짜 업데이트 데이터 생성"""
@@ -129,11 +166,11 @@ class UpdateChecker(QThread):
             'assets': [
                 {
                     'name': 'DeepFileX_v1.4.0_Setup.exe',
-                    'browser_download_url': 'https://github.com/quantumlayer/deepfilex/releases/download/v1.4.0/DeepFileX_v1.4.0_Setup.exe'
+                    'browser_download_url': 'https://github.com/noblejim/DeepFileX/releases/download/v1.4.0/DeepFileX_v1.4.0_Setup.exe'
                 }
             ],
             'published_at': '2025-08-29T10:00:00Z',
-            'html_url': 'https://github.com/quantumlayer/deepfilex/releases/tag/v1.4.0'
+            'html_url': 'https://github.com/noblejim/DeepFileX/releases/tag/v1.4.0'
         }
     
     def is_newer_version(self, latest: str, current: str) -> bool:

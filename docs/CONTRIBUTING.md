@@ -33,13 +33,13 @@ DeepFileX 프로젝트에 관심을 가져주셔서 감사합니다! 이 문서�
 DeepFileX에 기여할 수 있는 여러 방법:
 
 ### 1. 🐛 버그 리포트
-- 버그를 발견하셨나요? [이슈를 생성](https://github.com/quantumlayer/deepfilex/issues/new)해주세요
+- 버그를 발견하셨나요? [이슈를 생성](https://github.com/noblejim/DeepFileX/issues/new)해주세요
 - 재현 가능한 단계를 포함해주세요
 - 예상 동작과 실제 동작을 명시해주세요
 
 ### 2. ✨ 기능 제안
 - 새로운 기능 아이디어가 있으신가요?
-- [Discussion](https://github.com/quantumlayer/deepfilex/discussions)에서 먼저 논의해주세요
+- [Discussion](https://github.com/noblejim/DeepFileX/discussions)에서 먼저 논의해주세요
 - 기능의 필요성과 사용 사례를 설명해주세요
 
 ### 3. 💻 코드 기여
@@ -81,7 +81,7 @@ DeepFileX에 기여할 수 있는 여러 방법:
 
 2. **upstream 리모트 추가**
    ```bash
-   git remote add upstream https://github.com/quantumlayer/deepfilex.git
+   git remote add upstream https://github.com/noblejim/DeepFileX.git
    ```
 
 3. **가상환경 생성**
@@ -331,9 +331,9 @@ git push origin feature/amazing-feature
 
 ## 질문이 있으신가요?
 
-- 💬 [Discussions](https://github.com/quantumlayer/deepfilex/discussions)에서 질문해주세요
+- 💬 [Discussions](https://github.com/noblejim/DeepFileX/discussions)에서 질문해주세요
 - 📧 이메일: contact@quantumlayer.com
-- 🐛 버그는 [Issues](https://github.com/quantumlayer/deepfilex/issues)에 리포트해주세요
+- 🐛 버그는 [Issues](https://github.com/noblejim/DeepFileX/issues)에 리포트해주세요
 
 ---
 

@@ -54,7 +54,7 @@ jobs:
           - **Windows 실행 파일**: `DeepFileX_v${{ steps.get_version.outputs.VERSION }}.exe`
 
           ### 📋 변경사항
-          자세한 변경사항은 [CHANGELOG.md](https://github.com/quantumlayer/deepfilex/blob/master/CHANGELOG.md)를 참고하세요.
+          자세한 변경사항은 [CHANGELOG.md](https://github.com/noblejim/DeepFileX/blob/master/CHANGELOG.md)를 참고하세요.
 
           ### 💻 시스템 요구사항
           - **OS**: Windows 10+ (64bit)

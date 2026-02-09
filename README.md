@@ -1,6 +1,8 @@
-# 🔷 DeepFileX v1.3.0
+# 🔷 DeepFileX v1.4.1
 
 **DeepFileX** - 차세대 파일 검색 및 분석 솔루션
+
+> **Latest**: v1.4.1 (2026-02-09) - Search crash bug fix 🔧
 
 ## 🎯 프로젝트 개요
 
@@ -82,46 +84,66 @@ python src\filemri.py
 ```
 DeepFileX/
 ├── 📂 src/                   # 소스 코드
-│   ├── filemri.py           # 메인 애플리케이션 (3,345 라인)
-│   ├── filemri_smartlinks.py # 광고 수익화 시스템
-│   ├── update_checker.py    # 자동 업데이트 체커
-│   ├── webview2_ad_widget.py # WebView2 광고 위젯
-│   ├── version_config.py    # 버전 관리
-│   └── version_info.py      # 버전 정보
+│   ├── filemri.py            # 메인 애플리케이션 (3,345+ 라인)
+│   ├── github_pages_ad_widget.py  # GitHub Pages 광고 시스템
+│   ├── filemri_smartlinks.py # SmartLinks 수익화 시스템
+│   ├── update_checker.py     # 자동 업데이트 체커
+│   ├── version_config.py     # 버전 관리
+│   └── ...
 │
-├── 📂 scripts/              # 실행 스크립트
-│   ├── DeepFileX.bat        # 메인 런처
-│   ├── run_deepfilex.bat    # 개발자 모드 실행
-│   ├── quick_deploy.bat     # GitHub 배포 스크립트
-│   └── system_check.bat     # 시스템 호환성 체크
+├── 📂 tests/                 # 테스트 파일 (NEW)
+│   ├── README.md             # 테스트 가이드
+│   ├── test_ad_banner.py     # 광고 배너 테스트
+│   ├── test_webengine.py     # WebEngine 테스트
+│   └── ...
 │
-├── 📂 releases/             # 릴리즈 파일
-│   ├── v1.0.0/              # v1.0.0 릴리즈
-│   └── v1.3.0/              # 최신 릴리즈 (159MB)
-│       ├── DeepFileX_v1.3.0.exe         # 실행 파일 (79MB)
-│       └── DeepFileX_v1.3.0_Setup.exe   # 인스톨러 (80MB)
+├── 📂 build/                 # 빌드 관련 (REORGANIZED)
+│   ├── specs/                # PyInstaller spec 파일
+│   │   ├── DeepFileX_v1.4.0.spec
+│   │   └── DeepFileX_v1.4.1.spec
+│   ├── scripts/              # 빌드 스크립트
+│   │   ├── build_v1.4.0.bat
+│   │   └── build_v1.4.1.bat
+│   └── temp/                 # 임시 빌드 파일 (gitignored)
 │
-├── 📂 docs/                 # 문서
-│   ├── system_requirements.md
-│   ├── TEST_REPORT.md
-│   ├── reports/             # 개발 리포트
-│   └── archive/             # 과거 문서
+├── 📂 docs/                  # 문서 (CATEGORIZED)
+│   ├── README.md             # 문서 인덱스
+│   ├── releases/             # 릴리즈 노트
+│   │   ├── RELEASE_NOTES_v1.4.0.md
+│   │   └── RELEASE_NOTES_v1.4.1.md
+│   ├── development/          # 개발 문서
+│   │   ├── COUPANG_BANNER_IMPLEMENTATION.md
+│   │   └── RALPH_LOOP_SUMMARY.md
+│   ├── summaries/            # 버전별 개발 요약
+│   │   ├── V1.4.0_DEVELOPMENT_SUMMARY.md
+│   │   └── V1.4.1_DEVELOPMENT_SUMMARY.md
+│   ├── ads/                  # 광고 시스템 문서
+│   ├── reports/              # 개발 리포트
+│   └── archive/              # 과거 문서
 │
-├── 📂 assets/               # 리소스
-│   └── ads/                 # 광고 배너
+├── 📂 releases/              # 릴리즈 파일
+│   ├── v1.0.0/               # v1.0.0 릴리즈
+│   ├── v1.3.0/               # v1.3.0 릴리즈
+│   ├── v1.4.0/               # v1.4.0 릴리즈
+│   │   └── DeepFileX_v1.4.0.exe (222MB - local only)
+│   └── v1.4.1/               # 최신 릴리즈 ⭐
+│       └── DeepFileX_v1.4.1.exe (222MB - local only)
 │
-├── 📂 build/                # 빌드 설정
-│   ├── FileMRI_Phase11_Fixed.spec  # PyInstaller 설정
-│   └── FileMRI_Installer.iss       # Inno Setup 스크립트
+├── 📂 scripts/               # 유틸리티 스크립트
+│   └── legacy/               # 레거시 스크립트
 │
-├── 📂 website/              # 웹사이트
-│   ├── index.html           # DeepFileX 웹사이트
-│   └── legacy.html          # 구 FileMRI 웹사이트
+├── 📂 assets/                # 리소스
+│   └── ads/                  # 광고 리소스
 │
-├── 📄 README.md             # 프로젝트 소개 (이 파일)
-├── 📄 LICENSE.txt           # MIT 라이선스
-└── 📄 requirements.txt      # Python 의존성
+├── 📂 website/               # 프로젝트 웹사이트
+│
+├── 📄 README.md              # 프로젝트 소개 (이 파일)
+├── 📄 CHANGELOG.md           # 변경 이력
+├── 📄 LICENSE.txt            # MIT 라이선스
+└── 📄 requirements.txt       # Python 의존성
 ```
+
+> **Note**: 실행 파일(.exe)은 크기 제한으로 Git에서 제외됩니다. [GitHub Releases](https://github.com/noblejim/DeepFileX/releases)에서 다운로드하세요.
 
 ## 🔧 사용 방법
 
@@ -154,6 +176,20 @@ DeepFileX/
 
 ## 📈 개발 히스토리
 
+### v1.4.1 (2026-02-09) ⭐ LATEST
+- 🔧 **버그 수정**: 검색 중 프로그램 크래시 문제 해결 (Critical)
+- 🛡️ **안정성**: perform_search() 예외 처리 추가
+- 📝 **로깅**: 상세한 에러 트레이싱 (exc_info=True)
+- 🎯 **UX**: 에러 발생 시 명확한 사용자 피드백
+- 📚 **문서**: 프로젝트 구조 재정리 및 문서화
+
+### v1.4.0 (2026-02-08)
+- 🎉 **광고 시스템**: GitHub Pages 기반 Adsterra 배너 광고
+- 🔄 **자동 회전**: 실제 광고 이미지 표시 및 자동 변경
+- 🌐 **브라우저 연동**: 광고 클릭 시 외부 브라우저 자동 열기
+- ⬆️ **업그레이드**: PyQt6 6.10.2, PyQt6-WebEngine 6.10.0
+- 🎨 **최적화**: 광고 높이 최적화 (240px)
+
 ### v1.3.0 (2025-08-28)
 - ✅ FileMRI → DeepFileX 리브랜딩
 - ✅ QuantumLayer 회사명 적용
@@ -171,14 +207,16 @@ DeepFileX/
 - ✅ 30+ 파일 형식 지원
 - ✅ SQLite 기반 인덱싱
 
+> 📖 전체 변경 이력은 [CHANGELOG.md](CHANGELOG.md)를 참조하세요.
+
 ## 🛠️ 개발 가이드
 
 ### 개발 환경 설정
 
 1. **저장소 클론**
    ```bash
-   git clone https://github.com/quantumlayer/deepfilex.git
-   cd deepfilex
+   git clone https://github.com/noblejim/DeepFileX.git
+   cd DeepFileX
    ```
 
 2. **가상환경 생성 (권장)**
@@ -210,25 +248,38 @@ DeepFileX/
   - `run_deepfilex.bat`: 개발용 실행 스크립트
   - `quick_deploy.bat`: GitHub 릴리즈 배포
 
-- **docs/**: 모든 문서 및 리포트
+- **tests/**: 테스트 파일 (NEW)
+  - 테스트 파일 및 테스트 가이드
+
+- **build/**: 빌드 관련 (REORGANIZED)
+  - `specs/`: PyInstaller spec 파일
+  - `scripts/`: 빌드 스크립트
+  - `temp/`: 임시 빌드 파일 (gitignored)
+
+- **docs/**: 모든 문서 (CATEGORIZED)
+  - `releases/`: 릴리즈 노트
+  - `development/`: 개발 문서
+  - `summaries/`: 버전별 개발 요약
   - `reports/`: 개발 진행 리포트
   - `archive/`: 과거 문서 보관
 
 - **releases/**: 버전별 릴리즈 파일
-  - `v1.3.0/`: 최신 릴리즈 (실행 파일 + 인스톨러)
+  - `v1.4.1/`: 최신 릴리즈 (실행 파일)
 
 ### 빌드 방법
 
 1. **PyInstaller로 실행 파일 생성**
    ```bash
-   pyinstaller build\FileMRI_Phase11_Fixed.spec
+   # Windows
+   .\build\scripts\build_v1.4.1.bat
+
+   # 또는 수동
+   pyinstaller build\specs\DeepFileX_v1.4.1.spec --clean
    ```
 
-2. **Inno Setup으로 인스톨러 생성**
-   ```bash
-   # Inno Setup Compiler 실행
-   iscc build\FileMRI_Installer.iss
-   ```
+2. **빌드 출력**
+   - 위치: `build/temp/dist/DeepFileX.exe`
+   - 릴리즈: `releases/v1.4.1/DeepFileX_v1.4.1.exe`
 
 ### 코딩 규칙
 
@@ -253,7 +304,7 @@ DeepFileX/
 2. **Fork & Clone**
    ```bash
    # GitHub에서 Fork 후
-   git clone https://github.com/YOUR_USERNAME/deepfilex.git
+   git clone https://github.com/YOUR_USERNAME/DeepFileX.git
    ```
 
 3. **브랜치 생성**
@@ -294,10 +345,10 @@ DeepFileX/
 
 ## 📞 지원 및 문의
 
-- **GitHub**: https://github.com/quantumlayer/deepfilex
-- **Email**: contact@quantumlayer.com
-- **이슈 리포트**: GitHub Issues 활용
-- **기능 제안**: Discussion 탭 활용
+- **GitHub**: https://github.com/noblejim/DeepFileX
+- **Releases**: https://github.com/noblejim/DeepFileX/releases
+- **Issues**: https://github.com/noblejim/DeepFileX/issues
+- **Discussions**: https://github.com/noblejim/DeepFileX/discussions
 
 ## 🏆 특별 감사
 
@@ -307,4 +358,7 @@ DeepFileX/
 
 ---
 
-**DeepFileX v1.3.0** by **QuantumLayer** - Advanced File Analysis System 🔷💻
+**DeepFileX v1.4.1** by **QuantumLayer** - Advanced File Analysis System 🔷💻
+
+[![Latest Release](https://img.shields.io/github/v/release/noblejim/DeepFileX)](https://github.com/noblejim/DeepFileX/releases)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE.txt)

@@ -278,11 +278,11 @@ def get_update_test_data():
         'assets': [
             {
                 'name': f'DeepFileX_v{test_version}_Setup.exe',
-                'browser_download_url': f'https://github.com/quantumlayer/deepfilex/releases/download/v{test_version}/DeepFileX_v{test_version}_Setup.exe'
+                'browser_download_url': f'https://github.com/noblejim/DeepFileX/releases/download/v{test_version}/DeepFileX_v{test_version}_Setup.exe'
             }
         ],
         'published_at': '2025-08-29T10:00:00Z',
-        'html_url': f'https://github.com/quantumlayer/deepfilex/releases/tag/v{test_version}'
+        'html_url': f'https://github.com/noblejim/DeepFileX/releases/tag/v{test_version}'
     }
 
 # 🧪 테스트 및 디버깅용 함수

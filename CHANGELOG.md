@@ -196,8 +196,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Release Links
 
-- **v1.3.0**: [DeepFileX v1.3.0](https://github.com/quantumlayer/deepfilex/releases/tag/v1.3.0)
-- **v1.0.0**: [FileMRI v1.0.0](https://github.com/quantumlayer/deepfilex/releases/tag/v1.0.0)
+- **v1.4.1**: [DeepFileX v1.4.1](https://github.com/noblejim/DeepFileX/releases/tag/v1.4.1)
+- **v1.4.0**: [DeepFileX v1.4.0](https://github.com/noblejim/DeepFileX/releases/tag/v1.4.0)
+- **v1.3.0**: [DeepFileX v1.3.0](https://github.com/noblejim/DeepFileX/releases/tag/v1.3.0)
+- **v1.0.0**: [FileMRI v1.0.0](https://github.com/noblejim/DeepFileX/releases/tag/v1.0.0)
 
 ---
 
