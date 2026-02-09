@@ -27,7 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **User feedback**: Clear error messages and status bar updates on errors
 
 ### 📝 Technical Details
-- **File**: `src/filemri.py:2876-2983`
+- **File**: `src/deepfilex.py:2876-2983`
 - **Issue**: PyQt6 signal handlers lacked exception handling
 - **Solution**: Comprehensive try-except blocks with logging
 - **Impact**: Prevents application crashes during search operations

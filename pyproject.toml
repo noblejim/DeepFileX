@@ -99,7 +99,7 @@ addopts = "-v --tb=short"
 
 [tool.pyinstaller]
 name = "DeepFileX"
-entry_points = ["src/filemri.py"]
+entry_points = ["src/deepfilex.py"]
 icon = "assets/icon.ico"
 onefile = true
 windowed = true

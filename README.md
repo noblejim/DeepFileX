@@ -112,7 +112,7 @@ venv\Scripts\activate  # Windows
 pip install -r requirements.txt
 
 # 4. Run
-python src\filemri.py
+python src\deepfilex.py
 ```
 
 ### Building
@@ -129,7 +129,7 @@ Build output: `build/temp/dist/DeepFileX.exe`
 ```
 DeepFileX/
 ├── src/                   # Source code
-│   ├── filemri.py         # Main application
+│   ├── deepfilex.py       # Main application
 │   ├── update_checker.py  # Auto-update
 │   └── version_config.py  # Version management
 ├── tests/                 # Test files
