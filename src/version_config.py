@@ -12,14 +12,25 @@ License: MIT
 from datetime import datetime
 
 # 🎯 현재 버전 정보
-VERSION = "1.4.0"
-VERSION_CODE = 140  # 숫자 버전 (비교용)
-BUILD_DATE = "2026-02-08"
-BUILD_TIME = "21:45:00"
-BUILD_TIMESTAMP = datetime(2026, 2, 8, 21, 45, 0)
+VERSION = "1.4.1"
+VERSION_CODE = 141  # 숫자 버전 (비교용)
+BUILD_DATE = "2026-02-09"
+BUILD_TIME = "12:00:00"
+BUILD_TIMESTAMP = datetime(2026, 2, 9, 12, 0, 0)
 
 # 📋 버전 히스토리
 VERSION_HISTORY = {
+    "1.4.1": {
+        "date": "2026-02-09",
+        "features": [],
+        "fixes": [
+            "검색 중 프로그램 크래시 문제 해결",
+            "perform_search() 함수 예외 처리 추가",
+            "display_search_results() 함수 예외 처리 강화",
+            "검색 오류 발생 시 로그 기록 및 사용자 알림 개선",
+            "인덱스 로딩 후 검색 안정성 향상"
+        ]
+    },
     "1.4.0": {
         "date": "2026-02-08",
         "features": [

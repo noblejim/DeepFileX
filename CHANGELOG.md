@@ -17,6 +17,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.4.1] - 2026-02-09
+
+### 🔧 Bug Fixes
+
+#### 검색 크래시 문제 해결 (Critical Fix)
+- **검색 중 프로그램 종료 문제 수정**: `perform_search()` 함수에 예외 처리 추가
+- **검색 결과 표시 안정성 강화**: `display_search_results()` 함수에 포괄적 예외 처리 구현
+- **개별 결과 아이템 보호**: 한 개 결과 오류가 전체 검색 실패로 이어지지 않도록 개선
+- **SmartLinks 컨텍스트 업데이트 보호**: 광고 시스템 오류가 검색에 영향 없도록 분리
+- **에러 로깅 강화**: 검색 오류 발생 시 전체 traceback 로그 기록 (`exc_info=True`)
+- **사용자 피드백 개선**: 오류 발생 시 명확한 메시지 표시 및 상태바 업데이트
+
+### 📝 Technical Details
+- **File**: `src/filemri.py:2876-2983`
+- **Issue**: PyQt6 signal handlers (timer callback) lacked exception handling
+- **Solution**: Comprehensive try-except blocks with logging and user feedback
+- **Impact**: Prevents application crashes during search operations
+
+---
+
 ## [1.4.0] - 2026-02-08
 
 ### 🎉 Major Features

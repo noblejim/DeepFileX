@@ -71,15 +71,38 @@ try:
 except ImportError:
     PYQT_AVAILABLE = False
 
-# 🆕 SmartLinks 수익화 시스템 통합 (Adsterra)
+# 🆕 광고 배너 시스템 통합 (GitHub Pages → Adsterra)
+# 우선순위: 1. GitHub Pages Banner, 2. Rotating Image, 3. SmartLinks
+SMARTLINKS_AVAILABLE = False
+AdBanner = None
+
 try:
-    from filemri_smartlinks import SmartLinksAdWidget as AdBanner
+    # 1순위: GitHub Pages에서 Adsterra 배너 로드
+    from github_pages_ad_widget import GitHubPagesAdWidget as AdBanner
     from filemri_smartlinks import DeepFileXSmartLinksManager
     SMARTLINKS_AVAILABLE = True
-    logger.info("Adsterra SmartLinks system loaded")
-except ImportError as e:
-    SMARTLINKS_AVAILABLE = False
-    logger.warning(f"SmartLinks module not available: {e}")
+    logger.info("✅ GitHub Pages ad banner system loaded (Adsterra hosted)")
+except (ImportError, OSError) as e:
+    logger.warning(f"⚠️ GitHub Pages banner not available: {e}")
+
+    try:
+        # 2순위: 회전 이미지 배너
+        from rotating_image_banner import RotatingImageBanner as AdBanner
+        from filemri_smartlinks import DeepFileXSmartLinksManager
+        SMARTLINKS_AVAILABLE = True
+        logger.info("✅ Rotating image banner loaded")
+    except (ImportError, OSError) as e2:
+        logger.warning(f"⚠️ Rotating banner not available: {e2}")
+
+        try:
+            # 3순위: SmartLinks (gradient fallback)
+            from filemri_smartlinks import SmartLinksAdWidget as AdBanner
+            from filemri_smartlinks import DeepFileXSmartLinksManager
+            SMARTLINKS_AVAILABLE = True
+            logger.info("✅ SmartLinks fallback loaded")
+        except ImportError as e3:
+            SMARTLINKS_AVAILABLE = False
+            logger.warning(f"❌ No ad system available: {e3}")
 
 # 🆕 자동 업데이트 시스템 통합
 try:
@@ -1202,7 +1225,6 @@ class IndexLoadWorker(QThread):
                         logger.warning("Index loaded but no data found in search engine")
                     
                     # Small delay to show final message
-                    import time
                     time.sleep(0.3)
                     
                     success_msg = f"Index successfully loaded from: {os.path.basename(self.file_path)}"
@@ -2853,105 +2875,126 @@ Do you want to start turbo indexing now?
     
     def perform_search(self):
         """Perform turbo search with mode selection"""
-        query = self.search_input.text().strip()
-        if not query:
+        try:
+            query = self.search_input.text().strip()
+            if not query:
+                self.results_list.clear()
+                self.results_header.setText("Diagnosis Results (0)")
+                return
+
+            # Get search mode
+            mode_text = self.search_mode_combo.currentText()
+            if "Content Only" in mode_text:
+                search_mode = 'content'
+            elif "Filename Only" in mode_text:
+                search_mode = 'filename'
+            else:
+                search_mode = 'both'
+
+            # Apply file type filter (except for filename-only search)
+            file_type = self.file_type_combo.currentText()
+
+            # Perform search
+            results = self.search_engine.search_turbo(query, search_mode=search_mode, max_results=500)
+
+            # Filter by file type if specified and not filename-only search
+            if file_type != 'All Types' and search_mode != 'filename':
+                results = [r for r in results if r['path'].lower().endswith(file_type.lower())]
+            elif file_type != 'All Types' and search_mode == 'both':
+                # For 'both' mode, only filter content matches, keep filename matches
+                filtered_results = []
+                for r in results:
+                    if r['path'].lower().endswith(file_type.lower()):
+                        filtered_results.append(r)
+                    elif r.get('filename_match', False) and not r.get('content_match', False):
+                        # Pure filename match - keep regardless of file type
+                        filtered_results.append(r)
+                results = filtered_results
+
+            # Update results
+            self.display_search_results(results, query)
+
+        except Exception as e:
+            logger.error(f"Search failed: {e}", exc_info=True)
             self.results_list.clear()
-            self.results_header.setText("Diagnosis Results (0)")
-            return
-        
-        # Get search mode
-        mode_text = self.search_mode_combo.currentText()
-        if "Content Only" in mode_text:
-            search_mode = 'content'
-        elif "Filename Only" in mode_text:
-            search_mode = 'filename'
-        else:
-            search_mode = 'both'
-        
-        # Apply file type filter (except for filename-only search)
-        file_type = self.file_type_combo.currentText()
-        
-        # Perform search
-        results = self.search_engine.search_turbo(query, search_mode=search_mode, max_results=500)
-        
-        # Filter by file type if specified and not filename-only search
-        if file_type != 'All Types' and search_mode != 'filename':
-            results = [r for r in results if r['path'].lower().endswith(file_type.lower())]
-        elif file_type != 'All Types' and search_mode == 'both':
-            # For 'both' mode, only filter content matches, keep filename matches
-            filtered_results = []
-            for r in results:
-                if r['path'].lower().endswith(file_type.lower()):
-                    filtered_results.append(r)
-                elif r.get('filename_match', False) and not r.get('content_match', False):
-                    # Pure filename match - keep regardless of file type
-                    filtered_results.append(r)
-            results = filtered_results
-        
-        # Update results
-        self.display_search_results(results, query)
+            self.results_header.setText("Search Error")
+            self.status_bar.showMessage(f"Search error: {str(e)}")
     
     def display_search_results(self, results: List[Dict[str, Any]], query: str):
         """Display search results with match type indicators and file type icons"""
-        self.results_list.clear()
-        
-        if not results:
-            self.results_header.setText("Diagnosis Results (0)")
-            return
-        
-        self.results_header.setText(f"Diagnosis Results ({len(results)})")
-        
-        for result in results:
-            item = QListWidgetItem()
-            
-            # Format display text
-            filename = result['filename']
-            file_path = result['path']
-            snippet = result['snippet']
-            match_type = result.get('match_type', 'Content')
-            
-            # Get file type icon
-            ext = Path(file_path).suffix.lower()
-            if ext in ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff', '.webp', '.ico', '.svg']:
-                file_icon = "IMAGE"
-            elif ext in ['.pdf']:
-                file_icon = "PDF"
-            elif ext in ['.docx', '.doc']:
-                file_icon = "DOC"
-            elif ext in ['.xlsx', '.xls']:
-                file_icon = "XLS"
-            elif ext in ['.pptx', '.ppt']:
-                file_icon = "PPT"
-            elif ext in ['.zip', '.rar', '.7z', '.tar', '.gz']:
-                file_icon = "ZIP"
-            else:
-                file_icon = "FILE"
-            
-            # Truncate long paths
-            if len(file_path) > 80:
-                display_path = "..." + file_path[-77:]
-            else:
-                display_path = file_path
-            
-            # Truncate long snippets
-            if len(snippet) > 150:
-                snippet = snippet[:147] + "..."
-            
-            # Format with match type indicator and file icon
-            item_text = f"{file_icon} {filename} [{match_type}]\nPath: {display_path}\nSnippet: {snippet}"
-            item.setText(item_text)
-            item.setData(Qt.ItemDataRole.UserRole, result)
-            
-            self.results_list.addItem(item)
-        
-        # 🆕 SmartLinks 컨텍스트 업데이트 (검색 결과에 따라)
-        if SMARTLINKS_AVAILABLE:
-            if len(results) > 1000:
-                self.update_smartlinks_context("large_files_found")
-            elif len(results) == 0:
-                self.update_smartlinks_context("search_results_empty")
-            else:
-                self.update_smartlinks_context("file_scan_complete")
+        try:
+            self.results_list.clear()
+
+            if not results:
+                self.results_header.setText("Diagnosis Results (0)")
+                return
+
+            self.results_header.setText(f"Diagnosis Results ({len(results)})")
+
+            for result in results:
+                try:
+                    item = QListWidgetItem()
+
+                    # Format display text
+                    filename = result['filename']
+                    file_path = result['path']
+                    snippet = result['snippet']
+                    match_type = result.get('match_type', 'Content')
+
+                    # Get file type icon
+                    ext = Path(file_path).suffix.lower()
+                    if ext in ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff', '.webp', '.ico', '.svg']:
+                        file_icon = "IMAGE"
+                    elif ext in ['.pdf']:
+                        file_icon = "PDF"
+                    elif ext in ['.docx', '.doc']:
+                        file_icon = "DOC"
+                    elif ext in ['.xlsx', '.xls']:
+                        file_icon = "XLS"
+                    elif ext in ['.pptx', '.ppt']:
+                        file_icon = "PPT"
+                    elif ext in ['.zip', '.rar', '.7z', '.tar', '.gz']:
+                        file_icon = "ZIP"
+                    else:
+                        file_icon = "FILE"
+
+                    # Truncate long paths
+                    if len(file_path) > 80:
+                        display_path = "..." + file_path[-77:]
+                    else:
+                        display_path = file_path
+
+                    # Truncate long snippets
+                    if len(snippet) > 150:
+                        snippet = snippet[:147] + "..."
+
+                    # Format with match type indicator and file icon
+                    item_text = f"{file_icon} {filename} [{match_type}]\nPath: {display_path}\nSnippet: {snippet}"
+                    item.setText(item_text)
+                    item.setData(Qt.ItemDataRole.UserRole, result)
+
+                    self.results_list.addItem(item)
+
+                except Exception as item_error:
+                    logger.warning(f"Error displaying result item: {item_error}")
+                    continue
+
+            # 🆕 SmartLinks 컨텍스트 업데이트 (검색 결과에 따라)
+            if SMARTLINKS_AVAILABLE:
+                try:
+                    if len(results) > 1000:
+                        self.update_smartlinks_context("large_files_found")
+                    elif len(results) == 0:
+                        self.update_smartlinks_context("search_results_empty")
+                    else:
+                        self.update_smartlinks_context("file_scan_complete")
+                except Exception as smartlinks_error:
+                    logger.warning(f"SmartLinks context update failed: {smartlinks_error}")
+
+        except Exception as e:
+            logger.error(f"Failed to display search results: {e}", exc_info=True)
+            self.results_list.clear()
+            self.results_header.setText("Display Error")
     
     def on_result_selected(self, item):
         """Handle result selection"""
